@@ -1,0 +1,1047 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Haunted Maths Manor</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Creepster&family=Fredoka:wght@400;500;600;700&display=swap">
+<style>
+/* Layout: a moonlit manor seen floor by floor — each school term is a floor, each chapter a room door; play happens on a lantern-lit card with a chunky iPad keypad. Single committed night look. */
+:root{
+  color-scheme:dark;
+  --night:#17122b; --night-2:#211a3d; --panel:#2b2250; --panel-hi:#382c66; --line:#4a3d80;
+  --ghost:#f3eefc; --mist:#b7aedb; --pumpkin:#ff8a1f; --moon:#ffe08a; --slime:#8be36b; --rose:#ff6b81;
+  --display:"Creepster","Chiller",fantasy;
+  --ui:"Fredoka","Trebuchet MS",system-ui,sans-serif;
+}
+*{box-sizing:border-box}
+html,body{min-height:100%}
+body{background:var(--night);color:var(--ghost);font-family:var(--ui);font-size:18px;line-height:1.45;
+  background-image:radial-gradient(circle at 85% 6%,rgba(255,224,138,.22) 0 60px,transparent 61px),
+    radial-gradient(circle at 85% 6%,rgba(255,224,138,.08) 0 160px,transparent 161px),
+    linear-gradient(180deg,var(--night) 0%,var(--night-2) 100%);
+  background-attachment:fixed;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:18px 48px;
+  -webkit-tap-highlight-color:transparent}
+.wrap{max-width:920px;margin:0 auto;display:flex;flex-direction:column;gap:20px}
+h1,h2,h3{margin:0;text-wrap:balance}
+.title{font-family:var(--display);font-weight:400;font-size:clamp(2.6rem,8vw,4.4rem);line-height:.95;color:var(--pumpkin);letter-spacing:.02em;text-shadow:0 3px 0 #000}
+.lede{color:var(--mist);margin:0;max-width:60ch}
+button{font:inherit;cursor:pointer;border:0;border-radius:16px;color:var(--ghost);background:var(--panel-hi);padding:12px 18px;font-weight:600;touch-action:manipulation}
+button:active{transform:scale(.97)}
+button:focus-visible,input:focus-visible{outline:3px solid var(--moon);outline-offset:3px}
+button:disabled{opacity:.45;cursor:not-allowed}
+.btn-main{background:var(--pumpkin);color:#2a1300;box-shadow:0 4px 0 #a64f00}
+.btn-ghost{background:transparent;border:2px solid var(--line)}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+input[type=text]{font:inherit;font-size:1.3rem;padding:12px 16px;border-radius:14px;border:2px solid var(--line);background:var(--night);color:var(--ghost);width:100%;max-width:340px}
+
+/* top bar */
+.bar{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
+.bar .brand{font-family:var(--display);color:var(--pumpkin);font-size:1.9rem;line-height:1}
+.stats{display:flex;gap:8px;flex-wrap:wrap}
+.pill{background:var(--panel);border:2px solid var(--line);border-radius:999px;padding:6px 14px;font-weight:600;font-variant-numeric:tabular-nums;white-space:nowrap}
+.pill b{color:var(--moon)}
+
+/* floors */
+.floor{background:var(--panel);border:2px solid var(--line);border-radius:22px;padding:18px;display:flex;flex-direction:column;gap:14px;position:relative;overflow:hidden}
+.floor::before{content:"";position:absolute;inset:0 0 auto;height:6px;background:repeating-linear-gradient(90deg,var(--pumpkin) 0 18px,transparent 18px 30px);opacity:.6}
+.floor-head{display:flex;justify-content:space-between;align-items:baseline;gap:10px;flex-wrap:wrap}
+.floor-head h2{font-family:var(--display);font-weight:400;font-size:clamp(1.7rem,4.5vw,2.3rem);color:var(--moon);letter-spacing:.03em}
+.term{font-size:.85rem;text-transform:uppercase;letter-spacing:.12em;color:var(--mist);font-weight:600}
+.rooms{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:12px}
+.door{background:var(--night-2);border:2px solid var(--line);border-radius:18px 18px 10px 10px;padding:14px;text-align:left;display:flex;flex-direction:column;gap:6px;min-height:150px;font-weight:500}
+.door:hover{border-color:var(--pumpkin)}
+.door .ch{font-size:.78rem;text-transform:uppercase;letter-spacing:.1em;color:var(--mist);font-weight:600}
+.door .nm{font-size:1.1rem;font-weight:700;line-height:1.2}
+.door .sp{font-size:.88rem;color:var(--mist);font-style:italic}
+.door .res{margin-top:auto;display:flex;justify-content:space-between;align-items:center;font-variant-numeric:tabular-nums}
+.stars{letter-spacing:2px;color:var(--moon)}
+.stars .off{color:var(--line)}
+.door.done{border-color:var(--slime)}
+.door.boss{grid-column:1/-1;min-height:auto;background:linear-gradient(90deg,#3b1f4e,#2b2250);border-style:dashed;border-color:var(--pumpkin)}
+.door.boss.locked{border-color:var(--line);opacity:.7}
+.door.boss.beaten{border-style:solid;border-color:var(--moon)}
+
+/* play */
+.play{background:var(--panel);border:2px solid var(--line);border-radius:24px;padding:clamp(16px,3vw,28px);display:flex;flex-direction:column;gap:16px}
+.play-top{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
+.prog{display:flex;gap:6px}
+.prog i{width:28px;height:8px;border-radius:99px;background:var(--line)}
+.prog i.ok{background:var(--slime)}.prog i.bad{background:var(--rose)}.prog i.now{background:var(--moon)}
+.track{position:relative;height:46px;border-radius:999px;background:var(--night);border:2px solid var(--line);overflow:hidden}
+.track .you{position:absolute;right:10px;top:50%;transform:translateY(-50%);font-size:1.6rem}
+.track .boo{position:absolute;top:50%;transform:translate(-50%,-50%);font-size:1.9rem;transition:left .5s cubic-bezier(.3,1.5,.5,1)}
+.track-label{font-size:.9rem;color:var(--mist);margin-top:4px}
+.qtext{font-size:clamp(1.35rem,3.4vw,1.9rem);font-weight:600;line-height:1.3;margin:0}
+.qtext .data{display:block;margin-top:10px;font-size:.8em;font-weight:500;color:var(--mist);white-space:pre-line}
+.answer-box{display:flex;align-items:center;gap:10px;background:var(--night);border:3px solid var(--line);border-radius:16px;padding:10px 16px;min-height:66px;font-size:2rem;font-weight:700;font-variant-numeric:tabular-nums}
+.answer-box .val{flex:1;min-width:0;overflow-wrap:anywhere}
+.answer-box .val:empty::before{content:"Type your answer";color:var(--line);font-size:1.2rem;font-weight:500}
+.answer-box .unit{color:var(--mist);font-size:1.2rem}
+.answer-box.shake{animation:shake .4s;border-color:var(--rose)}
+@keyframes shake{25%{transform:translateX(-8px)}75%{transform:translateX(8px)}}
+.pad{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
+.pad button{min-height:64px;font-size:1.6rem;font-weight:700;background:var(--panel-hi);border-radius:14px;box-shadow:0 4px 0 #1a1433}
+.pad .fn{font-size:1.05rem;background:var(--line)}
+.pad .go{grid-column:span 2;background:var(--slime);color:#123300;box-shadow:0 4px 0 #4f9a35;font-size:1.3rem}
+.mc{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.mc button{min-height:72px;font-size:1.25rem;background:var(--panel-hi);box-shadow:0 4px 0 #1a1433;overflow-wrap:anywhere}
+.mc button.wrong{background:var(--rose);color:#3a0010;box-shadow:none}
+.mc button.right{background:var(--slime);color:#123300;box-shadow:none}
+.fb{border-radius:16px;padding:14px 16px;font-weight:600;display:flex;flex-direction:column;gap:8px}
+.fb.ok{background:rgba(139,227,107,.15);border:2px solid var(--slime)}
+.fb.no{background:rgba(255,107,129,.13);border:2px solid var(--rose)}
+.fb.hint{background:rgba(255,224,138,.12);border:2px dashed var(--moon);font-weight:500}
+.fb .sol{font-weight:500;white-space:pre-line}
+
+.fig{display:flex;justify-content:center;padding:10px;background:var(--night);border-radius:16px;overflow-x:auto}
+.fig svg{max-width:100%;height:auto}
+.fig polygon{stroke:var(--night);stroke-width:2;stroke-linejoin:round}
+.fig .ct{fill:#ffb56b}.fig .cl{fill:var(--pumpkin)}.fig .cr{fill:#c45f0a}
+.fr{display:inline-flex;flex-direction:column;align-items:center;vertical-align:middle;margin:0 .12em;font-size:.82em;line-height:1.1;font-variant-numeric:tabular-nums}
+.fr .fn{padding:0 .2em .06em;border-bottom:.09em solid currentColor;min-width:1ch;text-align:center}
+.fr .fd{padding:.06em .2em 0;min-width:1ch;text-align:center}
+.slot{display:inline-block;width:.75em;height:.9em;border:2px dashed var(--mist);border-radius:4px;vertical-align:middle}
+.answer-box .val{display:flex;align-items:center;gap:.05em}
+.answer-box .fr{font-size:.85em}
+.pad button small{display:block;font-size:.72rem;font-weight:600;margin-top:2px}
+.pad .fr{font-size:.75em}.pad .kw{font-size:1.1rem;vertical-align:middle}
+
+/* chase corridor */
+.corridor{position:relative;height:84px;border-radius:18px;overflow:hidden;border:2px solid var(--line);
+  background:linear-gradient(180deg,#241c44 0 62%,#1a1430 62% 100%)}
+.corridor::after{content:"";position:absolute;left:0;right:0;bottom:22%;height:3px;background:repeating-linear-gradient(90deg,var(--line) 0 18px,transparent 18px 30px)}
+.corridor .torch{position:absolute;top:8px;font-size:1.1rem;animation:flick 1.2s ease-in-out infinite alternate}
+@keyframes flick{to{opacity:.55;transform:scale(.9)}}
+.corridor .exit{position:absolute;right:10px;top:50%;transform:translateY(-50%);font-size:2.6rem}
+.corridor .runner,.corridor .boo{position:absolute;top:50%;transform:translate(-50%,-50%);font-size:2.4rem;transition:left .7s cubic-bezier(.3,1.4,.5,1);z-index:2}
+.corridor .boo{opacity:.9;animation:hover 1.6s ease-in-out infinite;z-index:1}
+@keyframes hover{50%{transform:translate(-50%,-62%)}}
+/* shop */
+.shop{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px}
+.item{background:var(--night-2);border:2px solid var(--line);border-radius:16px;padding:12px;display:flex;flex-direction:column;align-items:center;gap:8px;text-align:center}
+.item.own{border-color:var(--slime)}
+.item-ic{font-size:2.6rem;line-height:1}
+.item-nm{font-weight:600;min-height:2.6em;display:flex;align-items:center}
+.item button{width:100%;padding:10px 8px;font-size:.95rem}
+.haunt{position:relative;width:100%;max-width:100%;aspect-ratio:16/9;border-radius:18px;overflow:hidden;border:2px solid var(--line);
+  background:radial-gradient(circle at 50% 30%,#3a2d6b 0,#241c44 60%,#1a1430 100%)}
+.haunt-floor{position:absolute;left:0;right:0;bottom:0;height:22%;background:repeating-linear-gradient(90deg,#2e2152 0 40px,#271c47 40px 80px)}
+.haunt .deco{position:absolute;transform:translate(-50%,-50%);line-height:1;animation:rise .4s ease-out}
+.haunt .deco.me{z-index:2}
+.haunt-empty{position:absolute;left:50%;top:40%;transform:translate(-50%,-50%);margin:0;color:var(--mist);text-align:center;width:80%}
+.frac-box{justify-content:center;gap:14px;padding:12px 16px}
+.slot-btn{min-width:72px;min-height:56px;padding:4px 10px;font-size:1.8rem;font-weight:700;background:var(--panel-hi);border:3px dashed var(--line);border-radius:12px;color:var(--ghost);font-variant-numeric:tabular-nums}
+.slot-btn small{font-size:.8rem;font-weight:600;color:var(--mist)}
+.slot-btn.filled{border-style:solid}
+.slot-btn.active{border:3px solid var(--moon);background:#4a3c80;box-shadow:0 0 0 4px rgba(255,224,138,.25)}
+.slot-btn.whole{min-height:80px;font-size:2.2rem}
+.fr-in{display:inline-flex;flex-direction:column;align-items:center;gap:6px}
+.fr-bar{width:100%;min-width:80px;height:4px;border-radius:2px;background:var(--ghost)}
+
+/* diagrams */
+.geo{max-width:100%;height:auto;overflow:visible}
+.geo line,.geo path,.geo polyline,.geo rect,.geo circle{stroke:var(--ghost);stroke-width:4;fill:none;stroke-linecap:round;stroke-linejoin:round}
+.geo .arc{stroke:var(--moon);stroke-width:3}
+.geo .mark{stroke:var(--slime);stroke-width:3}
+.geo .par{stroke:var(--pumpkin);stroke-width:4}
+.geo .dot{fill:var(--ghost);stroke:none}
+.geo .thin{stroke:var(--line);stroke-width:2}
+.geo .tick{stroke:var(--moon);stroke-width:3}
+.geo .soft{stroke:var(--mist);stroke-width:3;fill:var(--panel-hi)}
+.geo .hl{stroke:var(--pumpkin);stroke-width:7}
+.geo .shape{stroke:var(--ghost);stroke-width:4;fill:rgba(255,255,255,.03)}
+.geo .base{fill:var(--panel-hi);stroke:var(--night);stroke-width:3}
+.geo .top{fill:var(--pumpkin);stroke:var(--night);stroke-width:3}
+.geo .gone{fill:transparent;stroke:var(--mist);stroke-width:3;stroke-dasharray:8 6}
+.geo .bar{fill:var(--pumpkin);stroke:none}
+.geo .lineg{stroke:var(--pumpkin);stroke-width:4}
+.geo .pt-dot{fill:var(--moon);stroke:none}
+.geo text{fill:var(--ghost);stroke:none;font:600 22px var(--ui)}
+.geo text.val{fill:var(--moon)}
+.geo text.ask{fill:var(--pumpkin);font-weight:700;font-size:28px}
+.geo text.pt{font-size:24px;font-weight:700}
+.geo text.axis{font-size:17px;font-weight:500;fill:var(--mist)}
+.geo text.big{font-size:26px}
+.fig-two{display:flex;gap:16px;flex-wrap:wrap;justify-content:center}
+.fig-two .geo{width:min(240px,45%)}
+.mc.big-opt button{font-size:2.4rem;font-weight:700;min-height:90px}
+.resume{background:var(--panel);border:2px solid var(--moon);border-radius:18px;padding:14px 16px;display:flex;flex-direction:column;gap:10px}
+.linkbtn{background:none;border:0;padding:0;color:var(--moon);text-decoration:underline;font-weight:600;font-size:inherit}
+.loadcode summary{cursor:pointer;color:var(--moon);font-weight:600}
+/* result / overlays */
+.sheet{position:fixed;inset:0;background:rgba(8,5,20,.82);display:grid;place-items:center;z-index:20;
+  padding:max(16px,env(safe-area-inset-top,0px)) max(16px,env(safe-area-inset-right,0px)) max(16px,env(safe-area-inset-bottom,0px)) max(16px,env(safe-area-inset-left,0px))}
+.card{background:var(--panel);border:2px solid var(--line);border-radius:24px;width:min(620px,100%);max-height:100%;overflow:auto;padding:clamp(18px,4vw,30px);display:flex;flex-direction:column;gap:16px;animation:rise .35s ease-out}
+@keyframes rise{from{transform:translateY(24px);opacity:0}to{transform:none;opacity:1}}
+.big{font-family:var(--display);font-weight:400;font-size:clamp(2.6rem,9vw,4rem);line-height:1;color:var(--pumpkin)}
+.big.green{color:var(--slime)}
+.bigstars{font-size:2.8rem;letter-spacing:6px;color:var(--moon)}
+.bigstars .off{color:var(--line)}
+.fact{background:var(--night);border-radius:16px;padding:14px 16px;border-left:6px solid var(--moon)}
+.fact b{display:block;font-size:.8rem;text-transform:uppercase;letter-spacing:.12em;color:var(--moon);margin-bottom:4px}
+.board{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:6px}
+.board li{display:grid;grid-template-columns:2.2ch 1fr auto auto;gap:12px;align-items:center;background:var(--night);border-radius:12px;padding:8px 12px;font-variant-numeric:tabular-nums}
+.board li.me{outline:2px solid var(--pumpkin)}
+.board .nm{min-width:0;overflow-wrap:anywhere;font-weight:600}
+.board .x{background:transparent;padding:2px 8px;font-size:.85rem;color:var(--mist);border:1px solid var(--line);border-radius:8px}
+.note{font-size:.92rem;color:var(--mist);margin:0}
+.code{font-size:1.8rem;font-weight:700;letter-spacing:.08em;color:var(--moon);background:var(--night);border-radius:12px;padding:8px 14px;user-select:all;text-align:center}
+.teacher{border-top:2px dashed var(--line);padding-top:14px;display:flex;flex-direction:column;gap:10px}
+.msg{min-height:1.4em;font-weight:600}
+.msg.err{color:var(--rose)}.msg.ok{color:var(--slime)}
+.badges{display:flex;gap:6px;flex-wrap:wrap}
+.badge{background:var(--moon);color:#3a2a00;border-radius:999px;padding:3px 12px;font-size:.85rem;font-weight:700}
+.bats{position:fixed;inset:0;pointer-events:none;z-index:30;overflow:hidden}
+.bats span{position:absolute;font-size:2rem;animation:fly 1.6s ease-out forwards}
+@keyframes fly{from{transform:translate(0,0) scale(.6);opacity:1}to{transform:translate(var(--dx),var(--dy)) scale(1.3) rotate(var(--r));opacity:0}}
+
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+@media (max-width:520px){.mc{grid-template-columns:1fr}.pad button{min-height:56px}}
+</style>
+
+<div class="wrap" id="app"></div>
+<div class="sheet" id="sheet" hidden><div class="card" id="card" role="dialog" aria-modal="true"></div></div>
+<div class="bats" id="bats" aria-hidden="true"></div>
+
+<script>
+/* ===== Question bank: Singapore P5 Maths, 4 terms, 16 chapters, 5 questions each (easy → hard) =====
+   t: num | frac | mc   d: 1 easy, 2 medium, 3 hard   form: improper | mixed (frac only)   simp: answer must be in simplest form */
+const FLOORS=[
+{name:"The Front Hall",term:"Term 1",rooms:[
+ {ch:1,title:"Number to 10 Million",sp:"The Cobweb Counting Room",
+  fact:"A million seconds is about 11½ days. A billion seconds is nearly 32 years!",
+  qs:[
+  {d:1,t:"num",q:"What is the value of the digit 5 in 3 500 000?",a:500000,h:"Name the places from the right: ones, tens, hundreds, thousands, ten thousands, hundred thousands.",s:"The 5 is in the hundred thousands place, so its value is 500 000."},
+  {d:1,t:"num",q:"Write in numerals: four million.",a:4000000,h:"One million is 1 000 000.",s:"Four million = 4 000 000"},
+  {d:2,t:"num",q:"Write in numerals: two million, three hundred thousand.",a:2300000,h:"Start with 2 000 000, then add 300 000.",s:"2 000 000 + 300 000 = 2 300 000"},
+  {d:2,t:"num",q:"Round 4 700 000 to the nearest million.",a:5000000,h:"Is 4 700 000 closer to 4 million or 5 million?",s:"The hundred thousands digit is 7, so round up: 5 000 000."},
+  {d:3,t:"num",q:"What number is 1000 more than 6 250 000?",a:6251000,h:"Add 1 to the thousands digit.",s:"6 250 000 + 1000 = 6 251 000"}]},
+ {ch:2,title:"Four Operations of Whole Numbers",sp:"The Bubbling Cauldron",
+  fact:"Multiply any 3-digit number by 1001 and the answer repeats it: 123 × 1001 = 123 123. Spooky!",
+  qs:[
+  {d:1,t:"num",q:"2500 + 1300 = ?",a:3800,h:"Add the thousands, then the hundreds.",s:"2500 + 1300 = 3800"},
+  {d:1,t:"num",q:"900 − 350 = ?",a:550,h:"Take away 300 first, then 50.",s:"900 − 300 = 600\n600 − 50 = 550"},
+  {d:2,t:"num",q:"24 × 5 = ?",a:120,h:"Work out 20 × 5 and 4 × 5, then add.",s:"20 × 5 = 100\n4 × 5 = 20\n100 + 20 = 120"},
+  {d:2,t:"num",q:"10 + 6 × 2 = ?",a:22,h:"Multiply before you add.",s:"6 × 2 = 12\n10 + 12 = 22"},
+  {d:3,t:"num",q:"A witch shares 96 sweets equally among 8 children. How many sweets does each child get?",a:12,h:"Divide 96 by 8.",s:"96 ÷ 8 = 12"}]},
+ {ch:3,title:"Factors and Multiples",sp:"The Fang Library",
+  fact:"13 is a prime number. A fear of the number 13 has a name: triskaidekaphobia!",
+  qs:[
+  {d:1,t:"mc",q:"Which number is a factor of 12?",o:["4","5","7","9"],a:"4",h:"A factor divides 12 exactly, with no remainder.",s:"12 ÷ 4 = 3, so 4 is a factor of 12."},
+  {d:1,t:"num",q:"What is the 3rd multiple of 5?",a:15,h:"Count in 5s: 5, 10, …",s:"5, 10, 15. The 3rd multiple is 15."},
+  {d:2,t:"mc",q:"Which number is a common factor of 8 and 12?",o:["4","3","6","8"],a:"4",h:"It must divide BOTH 8 and 12 exactly.",s:"8 ÷ 4 = 2 and 12 ÷ 4 = 3, so 4 is a common factor."},
+  {d:2,t:"num",q:"What is the lowest common multiple of 2 and 3?",a:6,h:"List the multiples of 3: 3, 6, … Which one is also a multiple of 2?",s:"Multiples of 3: 3, 6\n6 is also a multiple of 2. LCM = 6"},
+  {d:3,t:"mc",q:"Which number is a multiple of both 4 and 6?",o:["12","10","16","18"],a:"12",h:"Count in 4s and in 6s. Which number shows up in both lists?",s:"4, 8, 12…\n6, 12…\n12 is in both lists."}]},
+ {ch:4,title:"Fraction as Part of a Whole",sp:"The Pumpkin Pie Pantry",
+  fact:"The word “fraction” comes from the Latin word fractus, which means broken.",
+  qs:[
+  {d:1,t:"frac",q:"A pie is cut into 4 equal slices. A ghost eats 1 slice. What fraction of the pie did the ghost eat?",a:"1/4",h:"1 slice out of 4 slices.",s:"1 out of 4 = 1/4"},
+  {d:1,t:"num",q:"Find 1/2 of 20.",a:10,h:"Half means divide by 2.",s:"20 ÷ 2 = 10"},
+  {d:2,t:"num",q:"Find 1/4 of 12.",a:3,h:"Divide 12 into 4 equal parts.",s:"12 ÷ 4 = 3"},
+  {d:2,t:"frac",q:"A ghost ate 2/5 of a pie. What fraction of the pie is left?",a:"3/5",h:"The whole pie is 5/5.",s:"5/5 − 2/5 = 3/5"},
+  {d:3,t:"num",q:"There are 12 pumpkins. 3/4 of them are orange. How many pumpkins are orange?",a:9,h:"Find 1/4 of 12 first.",s:"1/4 of 12 = 3\n3/4 of 12 = 3 × 3 = 9"}]}
+]},
+{name:"The Ghostly Gallery",term:"Term 2",rooms:[
+ {ch:5,title:"Time",sp:"The Grandfather Clock Room",
+  fact:"Earth spins once in about 23 hours 56 minutes compared with the stars, a little less than 24 hours.",
+  qs:[
+  {d:1,t:"num",u:"min",q:"How many minutes are there in 1 hour?",a:60,h:"Think of the minute hand going all the way round.",s:"1 hour = 60 minutes"},
+  {d:1,t:"mc",q:"Which 24-hour clock time is the same as 3.00 p.m.?",o:["15 00","03 00","13 00","12 00"],a:"15 00",h:"For p.m. times, add 12 to the hour.",s:"3 + 12 = 15, so 3.00 p.m. is 15 00."},
+  {d:2,t:"num",u:"min",q:"How many minutes are there in 1 h 30 min?",a:90,h:"1 hour is 60 minutes.",s:"60 + 30 = 90 min"},
+  {d:2,t:"num",u:"min",q:"A puppet show starts at 4.00 p.m. and ends at 4.45 p.m. How long is the show?",a:45,h:"Count the minutes from 4.00 to 4.45.",s:"4.00 → 4.45 = 45 min"},
+  {d:3,t:"mc",q:"A spooky movie starts at 7.30 p.m. It lasts 1 h 15 min. When does it end?",o:["8.45 p.m.","8.15 p.m.","8.30 p.m.","9.15 p.m."],a:"8.45 p.m.",h:"Add 1 hour first, then add 15 minutes.",s:"7.30 + 1 h = 8.30\n8.30 + 15 min = 8.45 p.m."}]},
+ {ch:6,title:"Angles",sp:"The Bat Wing Chamber",
+  fact:"The ancient Babylonians counted in 60s, which is probably why a full turn has 360 degrees.",
+  qs:[
+  {d:1,t:"num",u:"°",q:"How many degrees are there in a right angle?",a:90,h:"Think of the corner of a square.",s:"A right angle is 90°."},
+  {d:1,t:"mc",q:"An angle smaller than a right angle is called…",o:["an acute angle","an obtuse angle","a straight angle","a full turn"],a:"an acute angle",h:"Acute angles are small and sharp, like a witch's hat.",s:"An angle less than 90° is acute."},
+  {d:2,t:"num",u:"°",q:"Angles on a straight line add up to how many degrees?",a:180,h:"A straight line is half a full turn.",s:"Angles on a straight line add up to 180°."},
+  {d:2,t:"num",u:"°",q:"Two angles are on a straight line. One of them is 100°. What is the other angle?",a:80,h:"Angles on a straight line add up to 180°.",s:"180° − 100° = 80°"},
+  {d:3,t:"num",u:"°",q:"How many degrees are there in a full turn?",a:360,h:"A full turn is 4 right angles.",s:"4 × 90° = 360°"}]},
+ {ch:7,title:"Perpendicular and Parallel Lines",sp:"The Railway of Lost Souls",
+  fact:"Railway tracks are parallel, yet they seem to meet far away. That trick of the eye is called perspective.",
+  qs:[
+  {d:1,t:"mc",q:"Two lines meet at a right angle. They are…",o:["perpendicular","parallel","neither"],a:"perpendicular",h:"Look for the small square in the corner. It shows a right angle.",s:"Lines that meet at a right angle are perpendicular. We write AB ⊥ CD."},
+  {d:1,t:"mc",q:"The two rails of an MRT track are…",o:["parallel","perpendicular","neither"],a:"parallel",h:"Do the two rails ever meet?",s:"The rails never meet, so they are parallel."},
+  {d:2,t:"mc",q:"The side of a door and the floor are…",o:["perpendicular","parallel","neither"],a:"perpendicular",h:"The door stands straight up from the floor. What angle do they make?",s:"The door edge meets the floor at a right angle, so they are perpendicular."},
+  {d:2,t:"mc",q:"Which symbol means “is parallel to”?",o:["//","⊥","=","+"],a:"//",h:"Parallel lines are marked with arrowheads. The symbol looks like two lines side by side.",s:"// means “is parallel to”. ⊥ means “is perpendicular to”."},
+  {d:3,t:"mc",q:"Which capital letter has perpendicular lines?",o:["T","V","N","O"],a:"T",h:"Look for two lines that meet at a right angle, like the corner of a square.",s:"In T, the two lines meet at a right angle. L and H have perpendicular lines too."}]},
+ {ch:8,title:"Rectangles and Squares",sp:"The Portrait Gallery",
+  fact:"Every square is a rectangle, but not every rectangle is a square!",
+  qs:[
+  {d:1,t:"num",q:"How many right angles does a square have?",a:4,h:"Count the corners. Every corner of a square is 90°.",s:"A square has 4 corners and each one is a right angle: 4 right angles."},
+  {d:1,t:"mc",q:"What is the only difference between a square and a rectangle?",o:["A square has all sides the same length","A square has no right angles","A rectangle has 3 corners","A rectangle has no parallel sides"],a:"A square has all sides the same length",h:"Both shapes have 4 right angles and opposite sides parallel. What about the sides?",s:"Square: ALL sides the same.\nRectangle: OPPOSITE sides the same.\nBoth have 4 right angles."},
+  {d:2,t:"mc",q:"ABCD is a square. Which pair of sides is parallel?",o:["AB // DC","AB // BC","DA // AB","BC // CD"],a:"AB // DC",h:"Parallel sides are opposite each other. Sides that meet at a corner are perpendicular.",s:"AB and DC are opposite sides, so AB // DC.\nThe other pairs meet at a corner, so they are perpendicular."},
+  {d:2,t:"num",u:"°",q:"ABCD is a square. A line is drawn from corner D to side BC. It makes a 35° angle with side DC. What is the unknown angle between DA and the line?",a:55,h:"ABCD is a square, so every corner is 90°.",s:"Every corner is 90°.\n90° − 35° = 55°"},
+  {d:3,t:"num",u:"°",q:"PQRS is a rectangle standing up tall. A line is drawn from corner S to side QR. It makes a 25° angle with side SR. What is the unknown angle between SP and the line?",a:65,h:"A rectangle standing up tall is still a rectangle. Every corner is 90°.",s:"Every corner is 90°.\n90° − 25° = 65°"}]},
+ {ch:9,title:"Mixed Numbers and Improper Fractions",sp:"The Candy Cupboard",
+  fact:"If a pumpkin pie has 8 slices and you eat 10 slices, you have eaten 1 2/8 = 1 1/4 pies!",
+  qs:[
+  {d:1,t:"frac",form:"improper",q:"Write 1 1/2 as an improper fraction.",a:"3/2",h:"1 whole = 2 halves. Add the 1 half.",s:"1 × 2 + 1 = 3, so 1 1/2 = 3/2"},
+  {d:1,t:"frac",form:"mixed",q:"Write 5/4 as a mixed number. (Use the whole-number box for the 1.)",a:"1 1/4",h:"4 quarters make 1 whole. How many quarters are left?",s:"5/4 = 4/4 + 1/4 = 1 1/4"},
+  {d:2,t:"frac",form:"improper",q:"Write 2 1/3 as an improper fraction.",a:"7/3",h:"2 wholes = 6 thirds. Add the 1 third.",s:"2 × 3 + 1 = 7, so 2 1/3 = 7/3"},
+  {d:2,t:"frac",q:"1 1/4 + 1 2/4 = ?",a:"2 3/4",h:"Add the wholes, then add the quarters.",s:"Wholes: 1 + 1 = 2\nQuarters: 1/4 + 2/4 = 3/4\nAnswer: 2 3/4"},
+  {d:3,t:"frac",form:"mixed",q:"Write 11/3 as a mixed number.",a:"3 2/3",h:"How many 3s go into 11, and what is left over?",s:"11 ÷ 3 = 3 remainder 2, so 11/3 = 3 2/3"}]},
+ {ch:10,title:"Multiplication of Fractions",sp:"The Potion Lab",
+  fact:"Multiplying by a fraction smaller than 1 makes a number smaller. Half of 10 is 5!",
+  qs:[
+  {d:1,t:"frac",q:"1/2 × 1/3 = ?",a:"1/6",h:"Multiply the top numbers, then multiply the bottom numbers.",s:"(1 × 1)/(2 × 3) = 1/6"},
+  {d:1,t:"num",q:"1/2 × 10 = ?",a:5,h:"Half of 10.",s:"10 ÷ 2 = 5"},
+  {d:2,t:"frac",q:"2/3 × 1/2 = ?",a:"1/3",h:"Multiply top × top and bottom × bottom, then simplify.",s:"(2 × 1)/(3 × 2) = 2/6 = 1/3"},
+  {d:2,t:"num",q:"1/4 × 20 = ?",a:5,h:"1/4 of 20 means 20 ÷ 4.",s:"20 ÷ 4 = 5"},
+  {d:3,t:"num",u:"L",q:"A witch has 12 L of potion. She uses 1/3 of it. How many litres does she use?",a:4,h:"Find 1/3 of 12.",s:"12 ÷ 3 = 4 L"}]}
+]},
+{name:"The Witch's Kitchen",term:"Term 3",rooms:[
+ {ch:11,title:"Decimals",sp:"The Spice Rack",
+  fact:"0.999… with 9s going on forever is exactly equal to 1. Mathematicians can prove it!",
+  qs:[
+  {d:1,t:"num",q:"Write 1/10 as a decimal.",a:0.1,h:"One tenth goes in the first place after the decimal point.",s:"1/10 = 0.1"},
+  {d:1,t:"num",q:"What is the value of the digit 3 in 2.35?",a:0.3,h:"The first place after the point is tenths.",s:"3 is in the tenths place: 0.3"},
+  {d:2,t:"num",q:"Write 1/2 as a decimal.",a:0.5,h:"1/2 = 5/10",s:"1/2 = 5/10 = 0.5"},
+  {d:2,t:"mc",q:"Which number is the largest?",o:["0.5","0.25","0.05","0.45"],a:"0.5",h:"Compare the tenths digit first.",s:"0.5 has the most tenths, so it is the largest."},
+  {d:3,t:"num",q:"Round 3.46 to 1 decimal place.",a:3.5,h:"Look at the hundredths digit. Is it 5 or more?",s:"The hundredths digit is 6, so round up: 3.5"}]},
+ {ch:12,title:"Four Operations of Decimals",sp:"The Bubbling Scales",
+  fact:"John Napier helped make the decimal point popular about 400 years ago.",
+  qs:[
+  {d:1,t:"num",q:"1.5 + 2.3 = ?",a:3.8,h:"Add the ones, then add the tenths.",s:"1.5 + 2.3 = 3.8"},
+  {d:1,t:"num",q:"5.6 − 1.2 = ?",a:4.4,h:"Subtract the ones, then the tenths.",s:"5.6 − 1.2 = 4.4"},
+  {d:2,t:"num",q:"0.4 × 3 = ?",a:1.2,h:"4 tenths × 3 = ? tenths",s:"4 tenths × 3 = 12 tenths = 1.2"},
+  {d:2,t:"num",q:"6.3 ÷ 3 = ?",a:2.1,h:"Divide the ones, then divide the tenths.",s:"6 ÷ 3 = 2 and 0.3 ÷ 3 = 0.1, so 2.1"},
+  {d:3,t:"num",u:"$",q:"A mask costs $3.50. Lisa pays with a $5 note. How much change does she get?",a:1.5,h:"Work out $5 − $3.50.",s:"$5.00 − $3.50 = $1.50"}]},
+ {ch:13,title:"Rate",sp:"The Broomstick Garage",
+  fact:"A cheetah can sprint at about 100 km per hour, but only for around 20 to 30 seconds.",
+  qs:[
+  {d:1,t:"num",q:"A printer prints 10 spooky posters every minute. How many posters does it print in 3 minutes?",a:30,h:"Multiply the posters per minute by the minutes.",s:"10 × 3 = 30 posters"},
+  {d:1,t:"num",u:"L",q:"A tap fills 20 L of water in 4 minutes. How many litres does it fill in 1 minute?",a:5,h:"Divide the litres by the minutes.",s:"20 ÷ 4 = 5 L"},
+  {d:2,t:"num",q:"A bat flaps its wings 12 times every second. How many times does it flap in 5 seconds?",a:60,h:"Multiply the flaps per second by the seconds.",s:"12 × 5 = 60 flaps"},
+  {d:2,t:"num",u:"$",q:"Candy costs $2 per bag. How much do 6 bags cost?",a:12,h:"Multiply the price of 1 bag by 6.",s:"6 × $2 = $12"},
+  {d:3,t:"num",u:"min",q:"A machine makes 8 masks every minute. How many minutes does it take to make 40 masks?",a:5,h:"How many 8s make 40?",s:"40 ÷ 8 = 5 min"}]}
+]},
+{name:"The Attic of Shadows",term:"Term 4",rooms:[
+ {ch:14,title:"Area and Perimeter",sp:"The Pumpkin Patch",
+  fact:"The heaviest pumpkin ever grown weighed more than 1200 kg, about as heavy as a small car!",
+  qs:[
+  {d:1,t:"num",u:"cm²",q:"Find the area of a rectangle that is 5 cm long and 4 cm wide.",a:20,h:"Area = length × width",s:"5 × 4 = 20 cm²"},
+  {d:1,t:"num",u:"cm",q:"Find the perimeter of a square with sides of 6 cm.",a:24,h:"A square has 4 equal sides. Add them all.",s:"4 × 6 = 24 cm"},
+  {d:2,t:"num",u:"cm",q:"Find the perimeter of a rectangle that is 8 cm long and 3 cm wide.",a:22,h:"Add all 4 sides: 8 + 3 + 8 + 3.",s:"8 + 3 + 8 + 3 = 22 cm"},
+  {d:2,t:"num",u:"cm²",q:"Find the area of a square with sides of 3 cm.",a:9,h:"Area of a square = side × side",s:"3 × 3 = 9 cm²"},
+  {d:3,t:"num",u:"cm",q:"A square has an area of 25 cm². How long is one side?",a:5,h:"Which number times itself makes 25?",s:"5 × 5 = 25, so each side is 5 cm."}]},
+ {ch:15,title:"Volume",sp:"The Slime Tank Room",
+  fact:"An Olympic swimming pool holds about 2.5 million litres of water. That is a lot of slime!",
+  qs:[
+  {d:1,t:"num",u:"cm³",fig:[[1,1,1,1]],q:"This solid is made of 1-cm cubes. What is its volume?",a:4,h:"Count the cubes. Each cube is 1 cm³.",s:"There are 4 cubes, so the volume is 4 cm³."},
+  {d:1,t:"num",fig:[[1,1,1],[1,1,1]],q:"How many unit cubes make up this solid?",a:6,h:"Count the back row, then the front row.",s:"Back row: 3 cubes\nFront row: 3 cubes\n3 + 3 = 6 cubes"},
+  {d:2,t:"num",u:"cm³",fig:[[3,2,1]],q:"This solid is made of 1-cm cubes. What is its volume?",a:6,h:"Count the cubes in each stack, then add.",s:"3 + 2 + 1 = 6 cubes\nThe volume is 6 cm³."},
+  {d:2,t:"num",u:"cm³",fig:[[2,2],[2,2]],q:"This solid is made of 1-cm cubes. What is its volume?",a:8,h:"There are 2 layers. Count the cubes in the top layer, then double it.",s:"Top layer: 4 cubes\nBottom layer: 4 cubes\n4 + 4 = 8 cm³"},
+  {d:3,t:"num",fig:[[1,1,1],[1,0,0]],q:"How many more unit cubes are needed to make this solid into a cuboid that is 3 cubes long, 2 cubes wide and 1 layer high?",a:2,h:"A cuboid 3 long and 2 wide needs 3 + 3 cubes. How many are there now?",s:"A full cuboid needs 3 × 2 = 6 cubes.\nThere are 4 cubes now.\n6 − 4 = 2 more cubes"}]},
+ {ch:16,title:"Tables and Graphs",sp:"The Fortune Teller's Charts",
+  fact:"Florence Nightingale drew graphs to show that clean hospitals saved lives, and the army listened.",
+  qs:[
+  {d:1,t:"num",q:"How many more bags of candy were sold on Tuesday than on Wednesday?",data:"Candy sold\nMonday: 12 bags\nTuesday: 15 bags\nWednesday: 9 bags",a:6,h:"Subtract Wednesday's number from Tuesday's.",s:"15 − 9 = 6"},
+  {d:1,t:"mc",q:"On which day were the most bags of candy sold?",data:"Candy sold\nMonday: 12 bags\nTuesday: 15 bags\nWednesday: 9 bags",o:["Tuesday","Monday","Wednesday","They are all the same"],a:"Tuesday",h:"Find the biggest number.",s:"15 is the biggest number, so Tuesday."},
+  {d:2,t:"num",q:"How many bags of candy were sold altogether?",data:"Candy sold\nMonday: 12 bags\nTuesday: 15 bags\nWednesday: 9 bags",a:36,h:"Add all three days.",s:"12 + 15 + 9 = 36"},
+  {d:2,t:"num",q:"How many more pupils chose mango than banana?",a:5,h:"Read the mango bar and the banana bar, then subtract.",s:"Mango: 10 pupils\nBanana: 5 pupils\n10 − 5 = 5"},
+  {d:3,t:"num",u:"°C",q:"By how many degrees did the temperature rise from 9 a.m. to 3 p.m.?",data:"Temperature\n9 a.m.: 26 °C\n12 p.m.: 30 °C\n3 p.m.: 31 °C",a:5,h:"Subtract the 9 a.m. temperature from the 3 p.m. temperature.",s:"31 − 26 = 5 °C"}]}
+]}];
+
+
+/* ===== Your question bank (P5 Foundation Maths Question Bank): each room draws a fresh mix from its pool ===== */
+const BANK={"1": [{"d": 1, "t": "mc", "q": "What number is this: 1,000?", "o": ["One thousand", "One hundred", "Ten thousand", "One million"], "a": "One thousand", "h": "Say the places from the right: ones, tens, hundreds, thousands, ten thousands, hundred thousands, millions.", "s": ""}, {"d": 1, "t": "mc", "q": "Which is larger: 52,000 or 25,000?", "o": ["52,000", "25,000"], "a": "52,000", "h": "Line up the numbers. Compare the digits from the left. The first digit that is different decides.", "s": ""}, {"d": 1, "t": "num", "q": "Round 230 to the nearest 100.", "a": 200.0, "h": "Look at the digit just after the place you are rounding to. 5 or more: round up. Less than 5: round down.", "s": "230 is closer to 200 than to 300."}, {"d": 1, "t": "mc", "q": "What is the place value of 5 in 500?", "o": ["Hundreds", "Tens", "Ones", "Thousands"], "a": "Hundreds", "h": "Say the places from the right: ones, tens, hundreds, thousands, ten thousands, hundred thousands, millions.", "s": ""}, {"d": 1, "t": "num", "q": "What comes next? 100, 200, 300, ___", "a": 400.0, "h": "How much does the number go up by each time?", "s": "It goes up by 100 each time."}, {"d": 1, "t": "num", "q": "Write ‘two thousand and five’ in numerals.", "a": 2005.0, "h": "Write each part in its place. Fill the empty places with zeros.", "s": "2000 + 5 = 2005"}, {"d": 1, "t": "mc", "q": "Is 6,000 bigger than 600?", "o": ["Yes", "No"], "a": "Yes", "h": "Line up the numbers. Compare the digits from the left. The first digit that is different decides.", "s": "6,000 has 4 digits. 600 has only 3."}, {"d": 1, "t": "num", "q": "Round 4,472 to the nearest 1,000.", "a": 4000.0, "h": "Look at the digit just after the place you are rounding to. 5 or more: round up. Less than 5: round down.", "s": "The hundreds digit is 4, so round down."}, {"d": 1, "t": "mc", "q": "What is the place value of 3 in 3,000?", "o": ["Thousands", "Hundreds", "Tens", "Ten thousands"], "a": "Thousands", "h": "Say the places from the right: ones, tens, hundreds, thousands, ten thousands, hundred thousands, millions.", "s": ""}, {"d": 1, "t": "mc", "q": "Which number has 7 in the thousands place?", "o": ["7,450", "4,750", "5,740"], "a": "7,450", "h": "Say the places from the right: ones, tens, hundreds, thousands, ten thousands, hundred thousands, millions.", "s": ""}, {"d": 1, "t": "num", "q": "Round 7,800 to the nearest 1,000.", "a": 8000.0, "h": "Look at the digit just after the place you are rounding to. 5 or more: round up. Less than 5: round down.", "s": "The hundreds digit is 8, so round up."}, {"d": 1, "t": "num", "q": "What is 10,000 more than 30,000?", "a": 40000.0, "h": "Only the digit in that place changes. Watch out when it goes past 9!", "s": "3 ten thousands + 1 ten thousand = 4 ten thousands"}, {"d": 1, "t": "mc", "q": "Which number is between 4,500 and 5,000?", "o": ["4,750", "5,100", "4,200"], "a": "4,750", "h": "Line up the numbers. Compare the digits from the left. The first digit that is different decides.", "s": ""}, {"d": 1, "t": "num", "q": "Write ‘sixty thousand’ in numerals.", "a": 60000.0, "h": "Write each part in its place. Fill the empty places with zeros.", "s": ""}, {"d": 1, "t": "num", "q": "Round 1,499 to the nearest 1,000.", "a": 1000.0, "h": "Look at the digit just after the place you are rounding to. 5 or more: round up. Less than 5: round down.", "s": "The hundreds digit is 4, so round down."}, {"d": 1, "t": "num", "q": "What is 1,000 less than 5,000?", "a": 4000.0, "h": "Only the digit in that place changes. Watch out when it goes past 9!", "s": ""}, {"d": 1, "t": "mc", "q": "What is the place value of 9 in 90,000?", "o": ["Ten thousands", "Thousands", "Hundred thousands", "Millions"], "a": "Ten thousands", "h": "Say the places from the right: ones, tens, hundreds, thousands, ten thousands, hundred thousands, millions.", "s": ""}, {"d": 1, "t": "mc", "q": "Which is the smallest?", "o": ["3,010", "3,100", "3,001"], "a": "3,001", "h": "Line up the numbers. Compare the digits from the left. The first digit that is different decides.", "s": ""}, {"d": 1, "t": "mc", "q": "How is 100,000 written in words?", "o": ["One hundred thousand", "Ten thousand", "One million", "One thousand"], "a": "One hundred thousand", "h": "Say the places from the right: ones, tens, hundreds, thousands, ten thousands, hundred thousands, millions.", "s": ""}, {"d": 1, "t": "num", "q": "Round 550,000 to the nearest 100,000.", "a": 600000.0, "h": "Look at the digit just after the place you are rounding to. 5 or more: round up. Less than 5: round down.", "s": "The ten thousands digit is 5, so round up."}, {"d": 2, "t": "mc", "q": "What is the value of 4 in 4,300,000?", "o": ["4 million", "4 hundred thousand", "4 thousand", "40 million"], "a": "4 million", "h": "Say the places from the right: ones, tens, hundreds, thousands, ten thousands, hundred thousands, millions.", "s": ""}, {"d": 2, "t": "num", "q": "Round 1,350,000 to the nearest million.", "a": 1000000.0, "h": "Look at the digit just after the place you are rounding to. 5 or more: round up. Less than 5: round down.", "s": "The hundred thousands digit is 3, so round down."}, {"d": 2, "t": "mc", "q": "Which is larger: 2,700,000 or 2,070,000?", "o": ["2,700,000", "2,070,000"], "a": "2,700,000", "h": "Line up the numbers. Compare the digits from the left. The first digit that is different decides.", "s": ""}, {"d": 2, "t": "num", "q": "What is 100,000 more than 4,000,000?", "a": 4100000.0, "h": "Only the digit in that place changes. Watch out when it goes past 9!", "s": ""}, {"d": 2, "t": "mc", "q": "Which sign goes in the blank? 5,400,000 ___ 5,040,000", "o": [">", "<", "="], "a": ">", "h": "Line up the numbers. Compare the digits from the left. The first digit that is different decides.", "s": "4 hundred thousands is more than 0 hundred thousands."}, {"d": 2, "t": "num", "q": "What comes next? 2 million, 4 million, 6 million, ___", "a": 8000000.0, "h": "How much does the number go up by each time?", "s": "It goes up by 2 million each time."}, {"d": 2, "t": "num", "q": "Round 6,720,000 to the nearest million.", "a": 7000000.0, "h": "Look at the digit just after the place you are rounding to. 5 or more: round up. Less than 5: round down.", "s": ""}, {"d": 2, "t": "mc", "q": "What is the place value of 8 in 8,050,000?", "o": ["Millions", "Hundred thousands", "Ten thousands", "Thousands"], "a": "Millions", "h": "Say the places from the right: ones, tens, hundreds, thousands, ten thousands, hundred thousands, millions.", "s": ""}, {"d": 2, "t": "num", "q": "Which number is 1,000,000 more than 3,200,000?", "a": 4200000.0, "h": "Only the digit in that place changes. Watch out when it goes past 9!", "s": ""}, {"d": 2, "t": "num", "q": "Round 4,500,000 to the nearest million.", "a": 5000000.0, "h": "Look at the digit just after the place you are rounding to. 5 or more: round up. Less than 5: round down.", "s": "The hundred thousands digit is 5, so round up."}, {"d": 2, "t": "num", "q": "What is 10,000 less than 7,050,000?", "a": 7040000.0, "h": "Only the digit in that place changes. Watch out when it goes past 9!", "s": ""}, {"d": 2, "t": "mc", "q": "Arrange from smallest to largest: 3,040,000 / 3,004,000 / 3,400,000", "o": ["3,004,000, 3,040,000, 3,400,000", "3,400,000, 3,040,000, 3,004,000", "3,040,000, 3,004,000, 3,400,000"], "a": "3,004,000, 3,040,000, 3,400,000", "h": "Line up the numbers. Compare the digits from the left. The first digit that is different decides.", "s": ""}, {"d": 2, "t": "mc", "q": "Which number has 5 in the hundred thousands place?", "o": ["6,500,000", "5,600,000", "6,050,000"], "a": "6,500,000", "h": "Say the places from the right: ones, tens, hundreds, thousands, ten thousands, hundred thousands, millions.", "s": ""}, {"d": 2, "t": "num", "q": "What is 1,000,000 less than 9,000,000?", "a": 8000000.0, "h": "Only the digit in that place changes. Watch out when it goes past 9!", "s": ""}, {"d": 2, "t": "num", "q": "Round 2,080,000 to the nearest 100,000.", "a": 2100000.0, "h": "Look at the digit just after the place you are rounding to. 5 or more: round up. Less than 5: round down.", "s": "The ten thousands digit is 8, so round up."}, {"d": 2, "t": "num", "q": "What comes next? 1,500,000, 2,000,000, 2,500,000, ___", "a": 3000000.0, "h": "How much does the number go up by each time?", "s": "It goes up by 500,000 each time."}, {"d": 2, "t": "mc", "q": "Which is larger: 7,200,000 or 7,020,000?", "o": ["7,200,000", "7,020,000"], "a": "7,200,000", "h": "Line up the numbers. Compare the digits from the left. The first digit that is different decides.", "s": ""}, {"d": 2, "t": "num", "q": "Write ‘five million, four hundred thousand’ in numerals.", "a": 5400000.0, "h": "Write each part in its place. Fill the empty places with zeros.", "s": ""}, {"d": 2, "t": "num", "q": "How many thousands are there in 1,000,000?", "a": 1000.0, "h": "1,000 × 1,000 = 1,000,000", "s": ""}, {"d": 2, "t": "mc", "q": "True or false: 3,099,000 < 3,100,000", "o": ["True", "False"], "a": "True", "h": "Line up the numbers. Compare the digits from the left. The first digit that is different decides.", "s": "0 hundred thousands is less than 1 hundred thousand."}, {"d": 3, "t": "num", "q": "What is 500,000 more than 9,200,000?", "a": 9700000.0, "h": "Only the digit in that place changes. Watch out when it goes past 9!", "s": ""}, {"d": 3, "t": "num", "q": "Round 9,650,000 to the nearest million.", "a": 10000000.0, "h": "Look at the digit just after the place you are rounding to. 5 or more: round up. Less than 5: round down.", "s": "9 million rounds up to 10 million."}, {"d": 3, "t": "num", "q": "What number is halfway between 6,000,000 and 8,000,000?", "a": 7000000.0, "h": "Which number is the same distance from both?", "s": ""}, {"d": 3, "t": "mc", "q": "True or false: 8,000,000 + 70,000 = 8,070,000", "o": ["True", "False"], "a": "True", "h": "Say the places from the right: ones, tens, hundreds, thousands, ten thousands, hundred thousands, millions.", "s": ""}, {"d": 3, "t": "mc", "q": "Which is the largest?", "o": ["9,090,000", "9,900,000", "9,009,000"], "a": "9,900,000", "h": "Line up the numbers. Compare the digits from the left. The first digit that is different decides.", "s": ""}, {"d": 3, "t": "num", "q": "What is 10 times 700,000?", "a": 7000000.0, "h": "Times 10: every digit moves one place to the left.", "s": ""}, {"d": 3, "t": "mc", "q": "Which number rounds to 6,000,000 when rounded to the nearest million?", "o": ["6,499,000", "5,499,000", "6,600,000"], "a": "6,499,000", "h": "Look at the digit just after the place you are rounding to. 5 or more: round up. Less than 5: round down.", "s": ""}, {"d": 3, "t": "mc", "q": "Arrange from largest to smallest: 8,008,000 / 8,800,000 / 8,080,000", "o": ["8,800,000, 8,080,000, 8,008,000", "8,008,000, 8,080,000, 8,800,000", "8,080,000, 8,800,000, 8,008,000"], "a": "8,800,000, 8,080,000, 8,008,000", "h": "Line up the numbers. Compare the digits from the left. The first digit that is different decides.", "s": ""}, {"d": 3, "t": "mc", "q": "True or false: 10,000,000 = ten million", "o": ["True", "False"], "a": "True", "h": "Say the places from the right: ones, tens, hundreds, thousands, ten thousands, hundred thousands, millions.", "s": ""}, {"d": 3, "t": "num", "q": "What is 100,000 less than 1,000,000?", "a": 900000.0, "h": "Only the digit in that place changes. Watch out when it goes past 9!", "s": ""}, {"d": 3, "t": "num", "q": "Which digit is in the millions place in 7,654,321?", "a": 7.0, "h": "Say the places from the right: ones, tens, hundreds, thousands, ten thousands, hundred thousands, millions.", "s": ""}, {"d": 3, "t": "num", "q": "How many hundreds are there in 1,000,000?", "a": 10000.0, "h": "100 × 10,000 = 1,000,000", "s": ""}, {"d": 3, "t": "num", "q": "What is 200,000 more than 9,850,000?", "a": 10050000.0, "h": "Only the digit in that place changes. Watch out when it goes past 9!", "s": ""}, {"d": 3, "t": "num", "q": "Round 5,555,555 to the nearest million.", "a": 6000000.0, "h": "Look at the digit just after the place you are rounding to. 5 or more: round up. Less than 5: round down.", "s": ""}, {"d": 3, "t": "mc", "q": "Between which two millions is 7,380,000?", "o": ["7 million and 8 million", "6 million and 7 million", "8 million and 9 million"], "a": "7 million and 8 million", "h": "Say the places from the right: ones, tens, hundreds, thousands, ten thousands, hundred thousands, millions.", "s": ""}, {"d": 3, "t": "mc", "q": "True or false: 9,009,000 > 9,090,000", "o": ["True", "False"], "a": "False", "h": "Line up the numbers. Compare the digits from the left. The first digit that is different decides.", "s": "0 ten thousands is less than 9 ten thousands, so 9,009,000 is smaller."}, {"d": 3, "t": "num", "q": "What is 3,000,000 + 400,000 + 50,000?", "a": 3450000.0, "h": "Write each part in its place. Fill the empty places with zeros.", "s": ""}, {"d": 3, "t": "mc", "q": "Which is closest to 5,000,000?", "o": ["4,499,000", "5,499,000", "4,999,000"], "a": "4,999,000", "h": "Line up the numbers. Compare the digits from the left. The first digit that is different decides.", "s": "4,999,000 is only 1,000 away."}, {"d": 3, "t": "num", "q": "10 × 10 × 10 × 10 × 10 × 10 × 10 = ?", "a": 10000000.0, "h": "Count the 10s. Each one adds a zero.", "s": ""}, {"d": 3, "t": "num", "q": "What is the value of 6 in 6,040,200?", "a": 6000000.0, "h": "Say the places from the right: ones, tens, hundreds, thousands, ten thousands, hundred thousands, millions.", "s": ""}], "2": [{"d": 1, "t": "num", "q": "345 + 210 = ?", "a": 555.0, "h": "Line up the digits. Add from the ones. Regroup when you need to.", "s": "345 + 210 = 555"}, {"d": 1, "t": "num", "q": "820 − 350 = ?", "a": 470.0, "h": "Line up the digits. Subtract from the ones. Rename when the top digit is too small.", "s": "820 − 350 = 470"}, {"d": 1, "t": "num", "q": "6 × 8 = ?", "a": 48.0, "h": "Multiply the digits, then add back the zeros.", "s": "6 × 8 = 48"}, {"d": 1, "t": "num", "q": "72 ÷ 9 = ?", "a": 8.0, "h": "Think of the times table. Which number times the divisor makes this?", "s": "72 ÷ 9 = 8"}, {"d": 1, "t": "num", "q": "1,000 × 7 = ?", "a": 7000.0, "h": "Multiply the digits, then add back the zeros.", "s": "1,000 × 7 = 7,000"}, {"d": 1, "t": "num", "q": "1,256 + 3,748 = ?", "a": 5004.0, "h": "Line up the digits. Add from the ones. Regroup when you need to.", "s": "1,256 + 3,748 = 5,004"}, {"d": 1, "t": "num", "q": "5,000 − 1,764 = ?", "a": 3236.0, "h": "Line up the digits. Subtract from the ones. Rename when the top digit is too small.", "s": "5,000 − 1,764 = 3,236"}, {"d": 1, "t": "num", "q": "48 × 6 = ?", "a": 288.0, "h": "Multiply the digits, then add back the zeros.", "s": "48 × 6 = 288"}, {"d": 1, "t": "num", "q": "630 ÷ 7 = ?", "a": 90.0, "h": "Think of the times table. Which number times the divisor makes this?", "s": "630 ÷ 7 = 90"}, {"d": 1, "t": "num", "q": "10,000 × 25 = ?", "a": 250000.0, "h": "Multiply the digits, then add back the zeros.", "s": "10,000 × 25 = 250,000"}, {"d": 1, "t": "num", "q": "4,567 + 3,894 = ?", "a": 8461.0, "h": "Line up the digits. Add from the ones. Regroup when you need to.", "s": "4,567 + 3,894 = 8,461"}, {"d": 1, "t": "num", "q": "9,000 − 4,356 = ?", "a": 4644.0, "h": "Line up the digits. Subtract from the ones. Rename when the top digit is too small.", "s": "9,000 − 4,356 = 4,644"}, {"d": 1, "t": "num", "q": "Ali has 560 stickers. He gives away 235. How many stickers does he have left?", "a": 325.0, "h": "Read carefully: do you need to add, subtract, multiply or divide?", "s": ""}, {"d": 1, "t": "num", "q": "A box holds 9 eggs. There are 63 eggs altogether. How many boxes are needed?", "a": 7.0, "h": "Read carefully: do you need to add, subtract, multiply or divide?", "s": ""}, {"d": 1, "t": "num", "q": "A class reads 120 pages a week. How many pages do they read in 4 weeks?", "a": 480.0, "h": "Read carefully: do you need to add, subtract, multiply or divide?", "s": ""}, {"d": 1, "t": "num", "q": "There are 8,000 seats in a stadium. 3,475 are taken. How many are empty?", "a": 4525.0, "h": "Read carefully: do you need to add, subtract, multiply or divide?", "s": ""}, {"d": 1, "t": "num", "q": "100,000 ÷ 25 = ?", "a": 4000.0, "h": "Think of the times table. Which number times the divisor makes this?", "s": "100,000 ÷ 25 = 4,000"}, {"d": 1, "t": "num", "q": "A baker makes 100 buns a day. How many buns in 30 days?", "a": 3000.0, "h": "Read carefully: do you need to add, subtract, multiply or divide?", "s": ""}, {"d": 1, "t": "num", "q": "1,234,567 + 2,345,678 = ?", "a": 3580245.0, "h": "Line up the digits. Add from the ones. Regroup when you need to.", "s": "1,234,567 + 2,345,678 = 3,580,245"}, {"d": 1, "t": "num", "q": "A shop sells 1,000 drinks a day. How many drinks in 7 days?", "a": 7000.0, "h": "Read carefully: do you need to add, subtract, multiply or divide?", "s": ""}, {"d": 2, "t": "num", "q": "625 + 340 = ?", "a": 965.0, "h": "Line up the digits. Add from the ones. Regroup when you need to.", "s": "625 + 340 = 965"}, {"d": 2, "t": "num", "q": "830 − 275 = ?", "a": 555.0, "h": "Line up the digits. Subtract from the ones. Rename when the top digit is too small.", "s": "830 − 275 = 555"}, {"d": 2, "t": "num", "q": "7 × 60 = ?", "a": 420.0, "h": "Multiply the digits, then add back the zeros.", "s": "7 × 60 = 420"}, {"d": 2, "t": "num", "q": "540 ÷ 6 = ?", "a": 90.0, "h": "Think of the times table. Which number times the divisor makes this?", "s": "540 ÷ 6 = 90"}, {"d": 2, "t": "num", "q": "1,000 × 9 = ?", "a": 9000.0, "h": "Multiply the digits, then add back the zeros.", "s": "1,000 × 9 = 9,000"}, {"d": 2, "t": "num", "q": "3,472 + 2,819 = ?", "a": 6291.0, "h": "Line up the digits. Add from the ones. Regroup when you need to.", "s": "3,472 + 2,819 = 6,291"}, {"d": 2, "t": "num", "q": "8,000 − 3,456 = ?", "a": 4544.0, "h": "Line up the digits. Subtract from the ones. Rename when the top digit is too small.", "s": "8,000 − 3,456 = 4,544"}, {"d": 2, "t": "num", "q": "7 × 800 = ?", "a": 5600.0, "h": "Multiply the digits, then add back the zeros.", "s": "7 × 800 = 5,600"}, {"d": 2, "t": "num", "q": "4,200 ÷ 7 = ?", "a": 600.0, "h": "Think of the times table. Which number times the divisor makes this?", "s": "4,200 ÷ 7 = 600"}, {"d": 2, "t": "num", "q": "12,345 + 6,789 = ?", "a": 19134.0, "h": "Line up the digits. Add from the ones. Regroup when you need to.", "s": "12,345 + 6,789 = 19,134"}, {"d": 2, "t": "num", "q": "20,000 − 8,364 = ?", "a": 11636.0, "h": "Line up the digits. Subtract from the ones. Rename when the top digit is too small.", "s": "20,000 − 8,364 = 11,636"}, {"d": 2, "t": "num", "q": "46,837 + 29,465 = ?", "a": 76302.0, "h": "Line up the digits. Add from the ones. Regroup when you need to.", "s": "46,837 + 29,465 = 76,302"}, {"d": 2, "t": "num", "q": "A class has 6 groups. Each group has 8 students. How many students are there altogether?", "a": 48.0, "h": "Read carefully: do you need to add, subtract, multiply or divide?", "s": ""}, {"d": 2, "t": "num", "q": "A bookshop receives 8 boxes of books. Each box contains 74 books. How many books are there in total?", "a": 592.0, "h": "Read carefully: do you need to add, subtract, multiply or divide?", "s": ""}, {"d": 2, "t": "num", "q": "756 students are split equally into 9 teams. How many students are in each team?", "a": 84.0, "h": "Read carefully: do you need to add, subtract, multiply or divide?", "s": ""}, {"d": 3, "t": "num", "q": "4,382 + 3,619 = ?", "a": 8001.0, "h": "Line up the digits. Add from the ones. Regroup when you need to.", "s": "4,382 + 3,619 = 8,001"}, {"d": 3, "t": "num", "q": "7,204 − 3,568 = ?", "a": 3636.0, "h": "Line up the digits. Subtract from the ones. Rename when the top digit is too small.", "s": "7,204 − 3,568 = 3,636"}, {"d": 3, "t": "num", "q": "9 × 700 = ?", "a": 6300.0, "h": "Multiply the digits, then add back the zeros.", "s": "9 × 700 = 6,300"}, {"d": 3, "t": "num", "q": "4,500 ÷ 9 = ?", "a": 500.0, "h": "Think of the times table. Which number times the divisor makes this?", "s": "4,500 ÷ 9 = 500"}, {"d": 3, "t": "num", "q": "100,000 × 6 = ?", "a": 600000.0, "h": "Multiply the digits, then add back the zeros.", "s": "100,000 × 6 = 600,000"}, {"d": 3, "t": "num", "q": "12,468 + 9,755 = ?", "a": 22223.0, "h": "Line up the digits. Add from the ones. Regroup when you need to.", "s": "12,468 + 9,755 = 22,223"}, {"d": 3, "t": "num", "q": "50,000 − 18,364 = ?", "a": 31636.0, "h": "Line up the digits. Subtract from the ones. Rename when the top digit is too small.", "s": "50,000 − 18,364 = 31,636"}, {"d": 3, "t": "num", "q": "8 × 9,000 = ?", "a": 72000.0, "h": "Multiply the digits, then add back the zeros.", "s": "8 × 9,000 = 72,000"}, {"d": 3, "t": "num", "q": "56,000 ÷ 8 = ?", "a": 7000.0, "h": "Think of the times table. Which number times the divisor makes this?", "s": "56,000 ÷ 8 = 7,000"}, {"d": 3, "t": "num", "q": "234,509 + 108,763 = ?", "a": 343272.0, "h": "Line up the digits. Add from the ones. Regroup when you need to.", "s": "234,509 + 108,763 = 343,272"}, {"d": 3, "t": "num", "q": "500,000 − 234,876 = ?", "a": 265124.0, "h": "Line up the digits. Subtract from the ones. Rename when the top digit is too small.", "s": "500,000 − 234,876 = 265,124"}, {"d": 3, "t": "num", "q": "1,050,000 + 3,275,000 + 2,480,000 = ?", "a": 6805000.0, "h": "Line up the digits. Add from the ones. Regroup when you need to.", "s": "1,050,000 + 3,275,000 + 2,480,000 = 6,805,000"}, {"d": 3, "t": "num", "q": "A library has 9 shelves. Each shelf holds 600 books. How many books are there altogether?", "a": 5400.0, "h": "Read carefully: do you need to add, subtract, multiply or divide?", "s": ""}, {"d": 3, "t": "num", "q": "A school canteen serves 850 students a day. How many students are served in 5 days?", "a": 4250.0, "h": "Read carefully: do you need to add, subtract, multiply or divide?", "s": ""}, {"d": 3, "t": "num", "q": "A tank holds 7,200 litres of water. It is used equally over 9 days. How many litres are used each day?", "a": 800.0, "h": "Read carefully: do you need to add, subtract, multiply or divide?", "s": ""}], "3": [{"d": 1, "t": "mc", "q": "True or false: 6 is a factor of 24.", "o": ["True", "False"], "a": "True", "h": "A factor divides a number exactly. A multiple is in the number's times table.", "s": "24 ÷ 6 = 4 exactly."}, {"d": 1, "t": "mc", "q": "True or false: 5 is a multiple of 25.", "o": ["True", "False"], "a": "False", "h": "A factor divides a number exactly. A multiple is in the number's times table.", "s": "5 is a factor of 25. 25 is a multiple of 5."}, {"d": 1, "t": "mc", "q": "True or false: 1 is a factor of every whole number.", "o": ["True", "False"], "a": "True", "h": "A factor divides a number exactly. A multiple is in the number's times table.", "s": "Every whole number divides by 1 exactly."}, {"d": 1, "t": "mc", "q": "True or false: 30 is a multiple of 6.", "o": ["True", "False"], "a": "True", "h": "A factor divides a number exactly. A multiple is in the number's times table.", "s": "6 × 5 = 30"}, {"d": 1, "t": "mc", "q": "True or false: 9 is a factor of 45.", "o": ["True", "False"], "a": "True", "h": "A factor divides a number exactly. A multiple is in the number's times table.", "s": "45 ÷ 9 = 5 exactly."}, {"d": 2, "t": "mc", "q": "True or false: 4 is a common factor of 16 and 30.", "o": ["True", "False"], "a": "False", "h": "A factor divides a number exactly. A multiple is in the number's times table.", "s": "30 ÷ 4 = 7 remainder 2, so 4 is not a factor of 30."}, {"d": 2, "t": "mc", "q": "True or false: The common factors of 12 and 18 include 6.", "o": ["True", "False"], "a": "True", "h": "A factor divides a number exactly. A multiple is in the number's times table.", "s": "12 ÷ 6 = 2 and 18 ÷ 6 = 3."}, {"d": 2, "t": "mc", "q": "True or false: 15 is a common multiple of 3 and 5.", "o": ["True", "False"], "a": "True", "h": "A factor divides a number exactly. A multiple is in the number's times table.", "s": "3 × 5 = 15 and 5 × 3 = 15."}, {"d": 2, "t": "mc", "q": "True or false: Every number has exactly 2 factors.", "o": ["True", "False"], "a": "False", "h": "A factor divides a number exactly. A multiple is in the number's times table.", "s": "Only prime numbers do. 12 has 6 factors."}, {"d": 2, "t": "mc", "q": "True or false: 7 is a factor of 56.", "o": ["True", "False"], "a": "True", "h": "A factor divides a number exactly. A multiple is in the number's times table.", "s": "56 ÷ 7 = 8 exactly."}, {"d": 3, "t": "mc", "q": "True or false: The smallest common multiple of 4 and 6 is 12.", "o": ["True", "False"], "a": "True", "h": "A factor divides a number exactly. A multiple is in the number's times table.", "s": "4, 8, 12 and 6, 12. 12 is the first in both lists."}, {"d": 3, "t": "mc", "q": "True or false: 2 is a factor of every even number.", "o": ["True", "False"], "a": "True", "h": "A factor divides a number exactly. A multiple is in the number's times table.", "s": "Even numbers divide by 2 exactly."}, {"d": 3, "t": "mc", "q": "True or false: The common factors of 24 and 36 are 1, 2, 3, 4, 6 and 12.", "o": ["True", "False"], "a": "True", "h": "A factor divides a number exactly. A multiple is in the number's times table.", "s": "List the factors of both numbers. These six are in both lists."}, {"d": 3, "t": "mc", "q": "True or false: The smallest common multiple of 3 and 7 is 14.", "o": ["True", "False"], "a": "False", "h": "A factor divides a number exactly. A multiple is in the number's times table.", "s": "It is 21. 14 is not a multiple of 3."}, {"d": 3, "t": "mc", "q": "True or false: A number can have itself and 1 as factors.", "o": ["True", "False"], "a": "True", "h": "A factor divides a number exactly. A multiple is in the number's times table.", "s": "For example, the factors of 7 are 1 and 7."}], "4": [{"d": 1, "t": "frac", "q": "🍕 Dough Station: the dough is cut into 4 equal pieces. 1 piece is used for the cat's mini pizza. What fraction of the dough is left?", "a": "3/4", "h": "Count the parts that are asked about (top number). Count ALL the equal parts (bottom number).", "s": ""}, {"d": 1, "t": "frac", "q": "🍕 Sauce Station: sauce is spread on 2 of 6 equal parts. What fraction has sauce?", "a": "2/6", "h": "Count the parts that are asked about (top number). Count ALL the equal parts (bottom number).", "s": ""}, {"d": 1, "t": "frac", "q": "🍕 Cheese Room: 5 of 8 cheese slices are on the pizza. What fraction of the slices is on the pizza?", "a": "5/8", "h": "Count the parts that are asked about (top number). Count ALL the equal parts (bottom number).", "s": ""}, {"d": 2, "t": "frac", "q": "🍕 Pepperoni Pantry: 7 of 10 pepperoni slices are on the pizza. What fraction is on the pizza?", "a": "7/10", "h": "Count the parts that are asked about (top number). Count ALL the equal parts (bottom number).", "s": ""}, {"d": 2, "t": "frac", "q": "🍕 Mushroom Cupboard: mushrooms are on 4 of 9 equal sections. What fraction has mushrooms?", "a": "4/9", "h": "Count the parts that are asked about (top number). Count ALL the equal parts (bottom number).", "s": ""}, {"d": 2, "t": "frac", "q": "🍕 Herb Garden: basil is on 2 of 5 equal wedges. What fraction has basil?", "a": "2/5", "h": "Count the parts that are asked about (top number). Count ALL the equal parts (bottom number).", "s": ""}, {"d": 3, "t": "frac", "q": "🍕 Olive Jar: olives are on 3 of 12 equal parts. What fraction has olives?", "a": "3/12", "h": "Count the parts that are asked about (top number). Count ALL the equal parts (bottom number).", "s": ""}, {"d": 3, "t": "frac", "q": "🍕 Pizza Oven: the pizza is cut into 8 equal slices. The cat eats 2. What fraction of the pizza is left?", "a": "6/8", "h": "Count the parts that are asked about (top number). Count ALL the equal parts (bottom number).", "s": ""}, {"d": 1, "t": "mc", "q": "Which fraction is larger?", "o": ["1/2", "1/4", "1/3", "1/6"], "a": "1/2", "h": "With the same top number, the smaller bottom number gives bigger pieces.", "s": ""}, {"d": 1, "t": "mc", "q": "Which fraction is smaller?", "o": ["3/4", "1/4", "2/4", "4/4"], "a": "1/4", "h": "Same bottom number? Compare the top numbers.", "s": ""}, {"d": 1, "t": "mc", "q": "Which fraction is equivalent to 1/2?", "o": ["2/4", "2/3", "1/3", "3/4"], "a": "2/4", "h": "Multiply or divide the top and bottom by the SAME number.", "s": "1/2 = (1 × 2)/(2 × 2) = 2/4"}, {"d": 1, "t": "mc", "q": "Which fraction is equal to 2/3?", "o": ["4/6", "3/4", "2/6", "3/6"], "a": "4/6", "h": "Multiply or divide the top and bottom by the SAME number.", "s": "2/3 = (2 × 2)/(3 × 2) = 4/6"}, {"d": 1, "t": "mc", "q": "Order from smallest to largest: 1/4, 1/2, 1/8", "o": ["1/8, 1/4, 1/2", "1/2, 1/4, 1/8", "1/4, 1/8, 1/2"], "a": "1/8, 1/4, 1/2", "h": "The bigger the bottom number, the smaller each piece.", "s": ""}, {"d": 2, "t": "mc", "q": "Which fraction is in simplest form?", "o": ["3/9", "2/6", "1/4", "4/8"], "a": "1/4", "h": "Divide the top and bottom by the same number until you can't any more.", "s": ""}, {"d": 2, "t": "frac", "q": "Simplify 6/8.", "a": "3/4", "h": "Divide the top and bottom by the same number until you can't any more.", "s": "6/8 → divide top and bottom by 2 → 3/4", "simp": 1}, {"d": 2, "t": "mc", "q": "Which fraction is equivalent to 3/4?", "o": ["6/8", "4/6", "3/8", "6/4"], "a": "6/8", "h": "Multiply or divide the top and bottom by the SAME number.", "s": "3/4 = (3 × 2)/(4 × 2) = 6/8"}, {"d": 2, "t": "mc", "q": "Which sign goes in the blank? 2/3 ___ 3/4", "o": ["<", ">", "="], "a": "<", "h": "Make the bottom numbers the same, then compare the top numbers.", "s": "2/3 = 8/12 and 3/4 = 9/12. 8/12 is less than 9/12."}, {"d": 2, "t": "mc", "q": "Which set goes from largest to smallest?", "o": ["3/4, 2/3, 1/2", "1/2, 2/3, 3/4", "2/3, 3/4, 1/2"], "a": "3/4, 2/3, 1/2", "h": "Make the bottom numbers the same, then compare the top numbers.", "s": ""}, {"d": 2, "t": "frac", "q": "Simplify 4/8.", "a": "1/2", "h": "Divide the top and bottom by the same number until you can't any more.", "s": "4/8 → divide top and bottom by 4 → 1/2", "simp": 1}, {"d": 2, "t": "mc", "q": "Which sign goes in the blank? 1/3 ___ 1/4", "o": [">", "<", "="], "a": ">", "h": "Same top number: the smaller bottom number is the bigger fraction.", "s": ""}, {"d": 3, "t": "num", "q": "?/12 = 3/4. Find the missing top number.", "a": 9.0, "h": "Multiply or divide the top and bottom by the SAME number.", "s": "4 × 3 = 12, so 3 × 3 = 9."}, {"d": 3, "t": "mc", "q": "Which fraction is NOT equivalent to 2/5?", "o": ["4/10", "6/15", "8/20", "6/20"], "a": "6/20", "h": "Multiply or divide the top and bottom by the SAME number.", "s": "6/20 simplifies to 3/10, not 2/5."}, {"d": 3, "t": "mc", "q": "Which sign goes in the blank? 5/6 ___ 7/8", "o": ["<", ">", "="], "a": "<", "h": "Make the bottom numbers the same, then compare the top numbers.", "s": "5/6 = 20/24 and 7/8 = 21/24."}, {"d": 3, "t": "mc", "q": "Order from smallest to largest: 5/6, 2/3, 3/4, 7/12", "o": ["7/12, 2/3, 3/4, 5/6", "5/6, 3/4, 2/3, 7/12", "2/3, 7/12, 3/4, 5/6"], "a": "7/12, 2/3, 3/4, 5/6", "h": "Make the bottom numbers the same, then compare the top numbers.", "s": "In twelfths: 7/12, 8/12, 9/12, 10/12."}, {"d": 3, "t": "num", "q": "3/4 = 9/?. Find the missing bottom number.", "a": 12.0, "h": "Multiply or divide the top and bottom by the SAME number.", "s": "3 × 3 = 9, so 4 × 3 = 12."}, {"d": 3, "t": "num", "q": "1/3 = ?/12. Find the missing top number.", "a": 4.0, "h": "Multiply or divide the top and bottom by the SAME number.", "s": "3 × 4 = 12, so 1 × 4 = 4."}, {"d": 3, "t": "mc", "q": "Which is the largest?", "o": ["5/6", "3/4", "2/3"], "a": "5/6", "h": "Make the bottom numbers the same, then compare the top numbers.", "s": "In twelfths: 10/12, 9/12, 8/12."}], "9": [{"d": 1, "t": "frac", "q": "Convert 3/2 to a mixed number.", "a": "1 1/2", "h": "How many wholes fit? Divide the top by the bottom. The remainder is the top of the fraction.", "s": "3 ÷ 2 = 1 remainder 1, so 3/2 = 1 1/2", "form": "mixed"}, {"d": 1, "t": "frac", "q": "Convert 5/2 to a mixed number.", "a": "2 1/2", "h": "How many wholes fit? Divide the top by the bottom. The remainder is the top of the fraction.", "s": "5 ÷ 2 = 2 remainder 1, so 5/2 = 2 1/2", "form": "mixed"}, {"d": 1, "t": "frac", "q": "Convert 7/2 to a mixed number.", "a": "3 1/2", "h": "How many wholes fit? Divide the top by the bottom. The remainder is the top of the fraction.", "s": "7 ÷ 2 = 3 remainder 1, so 7/2 = 3 1/2", "form": "mixed"}, {"d": 1, "t": "frac", "q": "Convert 9/2 to a mixed number.", "a": "4 1/2", "h": "How many wholes fit? Divide the top by the bottom. The remainder is the top of the fraction.", "s": "9 ÷ 2 = 4 remainder 1, so 9/2 = 4 1/2", "form": "mixed"}, {"d": 1, "t": "frac", "q": "Convert 11/2 to a mixed number.", "a": "5 1/2", "h": "How many wholes fit? Divide the top by the bottom. The remainder is the top of the fraction.", "s": "11 ÷ 2 = 5 remainder 1, so 11/2 = 5 1/2", "form": "mixed"}, {"d": 1, "t": "frac", "q": "Convert 4/3 to a mixed number.", "a": "1 1/3", "h": "How many wholes fit? Divide the top by the bottom. The remainder is the top of the fraction.", "s": "4 ÷ 3 = 1 remainder 1, so 4/3 = 1 1/3", "form": "mixed"}, {"d": 1, "t": "frac", "q": "Convert 7/3 to a mixed number.", "a": "2 1/3", "h": "How many wholes fit? Divide the top by the bottom. The remainder is the top of the fraction.", "s": "7 ÷ 3 = 2 remainder 1, so 7/3 = 2 1/3", "form": "mixed"}, {"d": 1, "t": "frac", "q": "Convert 10/3 to a mixed number.", "a": "3 1/3", "h": "How many wholes fit? Divide the top by the bottom. The remainder is the top of the fraction.", "s": "10 ÷ 3 = 3 remainder 1, so 10/3 = 3 1/3", "form": "mixed"}, {"d": 1, "t": "frac", "q": "Convert 13/3 to a mixed number.", "a": "4 1/3", "h": "How many wholes fit? Divide the top by the bottom. The remainder is the top of the fraction.", "s": "13 ÷ 3 = 4 remainder 1, so 13/3 = 4 1/3", "form": "mixed"}, {"d": 1, "t": "frac", "q": "Convert 11/3 to a mixed number.", "a": "3 2/3", "h": "How many wholes fit? Divide the top by the bottom. The remainder is the top of the fraction.", "s": "11 ÷ 3 = 3 remainder 2, so 11/3 = 3 2/3", "form": "mixed"}, {"d": 2, "t": "frac", "q": "Convert 5/4 to a mixed number.", "a": "1 1/4", "h": "How many wholes fit? Divide the top by the bottom. The remainder is the top of the fraction.", "s": "5 ÷ 4 = 1 remainder 1, so 5/4 = 1 1/4", "form": "mixed"}, {"d": 2, "t": "frac", "q": "Convert 7/4 to a mixed number.", "a": "1 3/4", "h": "How many wholes fit? Divide the top by the bottom. The remainder is the top of the fraction.", "s": "7 ÷ 4 = 1 remainder 3, so 7/4 = 1 3/4", "form": "mixed"}, {"d": 2, "t": "frac", "q": "Convert 9/4 to a mixed number.", "a": "2 1/4", "h": "How many wholes fit? Divide the top by the bottom. The remainder is the top of the fraction.", "s": "9 ÷ 4 = 2 remainder 1, so 9/4 = 2 1/4", "form": "mixed"}, {"d": 2, "t": "frac", "q": "Convert 11/4 to a mixed number.", "a": "2 3/4", "h": "How many wholes fit? Divide the top by the bottom. The remainder is the top of the fraction.", "s": "11 ÷ 4 = 2 remainder 3, so 11/4 = 2 3/4", "form": "mixed"}, {"d": 2, "t": "frac", "q": "Convert 13/4 to a mixed number.", "a": "3 1/4", "h": "How many wholes fit? Divide the top by the bottom. The remainder is the top of the fraction.", "s": "13 ÷ 4 = 3 remainder 1, so 13/4 = 3 1/4", "form": "mixed"}, {"d": 2, "t": "frac", "q": "Convert 6/5 to a mixed number.", "a": "1 1/5", "h": "How many wholes fit? Divide the top by the bottom. The remainder is the top of the fraction.", "s": "6 ÷ 5 = 1 remainder 1, so 6/5 = 1 1/5", "form": "mixed"}, {"d": 2, "t": "frac", "q": "Convert 8/5 to a mixed number.", "a": "1 3/5", "h": "How many wholes fit? Divide the top by the bottom. The remainder is the top of the fraction.", "s": "8 ÷ 5 = 1 remainder 3, so 8/5 = 1 3/5", "form": "mixed"}, {"d": 2, "t": "frac", "q": "Convert 11/5 to a mixed number.", "a": "2 1/5", "h": "How many wholes fit? Divide the top by the bottom. The remainder is the top of the fraction.", "s": "11 ÷ 5 = 2 remainder 1, so 11/5 = 2 1/5", "form": "mixed"}, {"d": 2, "t": "frac", "q": "Convert 13/5 to a mixed number.", "a": "2 3/5", "h": "How many wholes fit? Divide the top by the bottom. The remainder is the top of the fraction.", "s": "13 ÷ 5 = 2 remainder 3, so 13/5 = 2 3/5", "form": "mixed"}, {"d": 2, "t": "frac", "q": "Convert 17/5 to a mixed number.", "a": "3 2/5", "h": "How many wholes fit? Divide the top by the bottom. The remainder is the top of the fraction.", "s": "17 ÷ 5 = 3 remainder 2, so 17/5 = 3 2/5", "form": "mixed"}, {"d": 3, "t": "frac", "q": "Convert 7/6 to a mixed number.", "a": "1 1/6", "h": "How many wholes fit? Divide the top by the bottom. The remainder is the top of the fraction.", "s": "7 ÷ 6 = 1 remainder 1, so 7/6 = 1 1/6", "form": "mixed"}, {"d": 3, "t": "frac", "q": "Convert 11/6 to a mixed number.", "a": "1 5/6", "h": "How many wholes fit? Divide the top by the bottom. The remainder is the top of the fraction.", "s": "11 ÷ 6 = 1 remainder 5, so 11/6 = 1 5/6", "form": "mixed"}, {"d": 3, "t": "frac", "q": "Convert 13/6 to a mixed number.", "a": "2 1/6", "h": "How many wholes fit? Divide the top by the bottom. The remainder is the top of the fraction.", "s": "13 ÷ 6 = 2 remainder 1, so 13/6 = 2 1/6", "form": "mixed"}, {"d": 3, "t": "frac", "q": "Convert 9/8 to a mixed number.", "a": "1 1/8", "h": "How many wholes fit? Divide the top by the bottom. The remainder is the top of the fraction.", "s": "9 ÷ 8 = 1 remainder 1, so 9/8 = 1 1/8", "form": "mixed"}, {"d": 3, "t": "frac", "q": "Convert 11/8 to a mixed number.", "a": "1 3/8", "h": "How many wholes fit? Divide the top by the bottom. The remainder is the top of the fraction.", "s": "11 ÷ 8 = 1 remainder 3, so 11/8 = 1 3/8", "form": "mixed"}, {"d": 1, "t": "frac", "q": "Convert 1 1/2 to an improper fraction.", "a": "3/2", "h": "Multiply the whole number by the bottom number, then add the top number.", "s": "1 × 2 + 1 = 3, so 1 1/2 = 3/2", "form": "improper"}, {"d": 1, "t": "frac", "q": "Convert 2 1/2 to an improper fraction.", "a": "5/2", "h": "Multiply the whole number by the bottom number, then add the top number.", "s": "2 × 2 + 1 = 5, so 2 1/2 = 5/2", "form": "improper"}, {"d": 1, "t": "frac", "q": "Convert 3 1/2 to an improper fraction.", "a": "7/2", "h": "Multiply the whole number by the bottom number, then add the top number.", "s": "3 × 2 + 1 = 7, so 3 1/2 = 7/2", "form": "improper"}, {"d": 1, "t": "frac", "q": "Convert 4 1/2 to an improper fraction.", "a": "9/2", "h": "Multiply the whole number by the bottom number, then add the top number.", "s": "4 × 2 + 1 = 9, so 4 1/2 = 9/2", "form": "improper"}, {"d": 1, "t": "frac", "q": "Convert 5 1/2 to an improper fraction.", "a": "11/2", "h": "Multiply the whole number by the bottom number, then add the top number.", "s": "5 × 2 + 1 = 11, so 5 1/2 = 11/2", "form": "improper"}, {"d": 1, "t": "frac", "q": "Convert 1 1/3 to an improper fraction.", "a": "4/3", "h": "Multiply the whole number by the bottom number, then add the top number.", "s": "1 × 3 + 1 = 4, so 1 1/3 = 4/3", "form": "improper"}, {"d": 1, "t": "frac", "q": "Convert 1 2/3 to an improper fraction.", "a": "5/3", "h": "Multiply the whole number by the bottom number, then add the top number.", "s": "1 × 3 + 2 = 5, so 1 2/3 = 5/3", "form": "improper"}, {"d": 1, "t": "frac", "q": "Convert 2 1/3 to an improper fraction.", "a": "7/3", "h": "Multiply the whole number by the bottom number, then add the top number.", "s": "2 × 3 + 1 = 7, so 2 1/3 = 7/3", "form": "improper"}, {"d": 1, "t": "frac", "q": "Convert 2 2/3 to an improper fraction.", "a": "8/3", "h": "Multiply the whole number by the bottom number, then add the top number.", "s": "2 × 3 + 2 = 8, so 2 2/3 = 8/3", "form": "improper"}, {"d": 1, "t": "frac", "q": "Convert 3 1/3 to an improper fraction.", "a": "10/3", "h": "Multiply the whole number by the bottom number, then add the top number.", "s": "3 × 3 + 1 = 10, so 3 1/3 = 10/3", "form": "improper"}, {"d": 2, "t": "frac", "q": "Convert 1 1/4 to an improper fraction.", "a": "5/4", "h": "Multiply the whole number by the bottom number, then add the top number.", "s": "1 × 4 + 1 = 5, so 1 1/4 = 5/4", "form": "improper"}, {"d": 2, "t": "frac", "q": "Convert 1 3/4 to an improper fraction.", "a": "7/4", "h": "Multiply the whole number by the bottom number, then add the top number.", "s": "1 × 4 + 3 = 7, so 1 3/4 = 7/4", "form": "improper"}, {"d": 2, "t": "frac", "q": "Convert 2 1/4 to an improper fraction.", "a": "9/4", "h": "Multiply the whole number by the bottom number, then add the top number.", "s": "2 × 4 + 1 = 9, so 2 1/4 = 9/4", "form": "improper"}, {"d": 2, "t": "frac", "q": "Convert 2 3/4 to an improper fraction.", "a": "11/4", "h": "Multiply the whole number by the bottom number, then add the top number.", "s": "2 × 4 + 3 = 11, so 2 3/4 = 11/4", "form": "improper"}, {"d": 2, "t": "frac", "q": "Convert 3 1/4 to an improper fraction.", "a": "13/4", "h": "Multiply the whole number by the bottom number, then add the top number.", "s": "3 × 4 + 1 = 13, so 3 1/4 = 13/4", "form": "improper"}, {"d": 2, "t": "frac", "q": "Convert 1 2/5 to an improper fraction.", "a": "7/5", "h": "Multiply the whole number by the bottom number, then add the top number.", "s": "1 × 5 + 2 = 7, so 1 2/5 = 7/5", "form": "improper"}, {"d": 2, "t": "frac", "q": "Convert 1 3/5 to an improper fraction.", "a": "8/5", "h": "Multiply the whole number by the bottom number, then add the top number.", "s": "1 × 5 + 3 = 8, so 1 3/5 = 8/5", "form": "improper"}, {"d": 2, "t": "frac", "q": "Convert 2 2/5 to an improper fraction.", "a": "12/5", "h": "Multiply the whole number by the bottom number, then add the top number.", "s": "2 × 5 + 2 = 12, so 2 2/5 = 12/5", "form": "improper"}, {"d": 2, "t": "frac", "q": "Convert 2 3/5 to an improper fraction.", "a": "13/5", "h": "Multiply the whole number by the bottom number, then add the top number.", "s": "2 × 5 + 3 = 13, so 2 3/5 = 13/5", "form": "improper"}, {"d": 2, "t": "frac", "q": "Convert 3 2/5 to an improper fraction.", "a": "17/5", "h": "Multiply the whole number by the bottom number, then add the top number.", "s": "3 × 5 + 2 = 17, so 3 2/5 = 17/5", "form": "improper"}, {"d": 3, "t": "frac", "q": "Convert 1 1/6 to an improper fraction.", "a": "7/6", "h": "Multiply the whole number by the bottom number, then add the top number.", "s": "1 × 6 + 1 = 7, so 1 1/6 = 7/6", "form": "improper"}, {"d": 3, "t": "frac", "q": "Convert 1 5/6 to an improper fraction.", "a": "11/6", "h": "Multiply the whole number by the bottom number, then add the top number.", "s": "1 × 6 + 5 = 11, so 1 5/6 = 11/6", "form": "improper"}, {"d": 3, "t": "frac", "q": "Convert 2 1/6 to an improper fraction.", "a": "13/6", "h": "Multiply the whole number by the bottom number, then add the top number.", "s": "2 × 6 + 1 = 13, so 2 1/6 = 13/6", "form": "improper"}, {"d": 3, "t": "frac", "q": "Convert 1 3/8 to an improper fraction.", "a": "11/8", "h": "Multiply the whole number by the bottom number, then add the top number.", "s": "1 × 8 + 3 = 11, so 1 3/8 = 11/8", "form": "improper"}, {"d": 3, "t": "frac", "q": "Convert 2 1/8 to an improper fraction.", "a": "17/8", "h": "Multiply the whole number by the bottom number, then add the top number.", "s": "2 × 8 + 1 = 17, so 2 1/8 = 17/8", "form": "improper"}, {"d": 2, "t": "frac", "q": "👾 7/4 + 3/4 = ?", "a": "2 1/2", "h": "Same bottom numbers? Add or subtract the top numbers only. The bottom stays the same.", "s": "7/4 + 3/4 = 2 1/2"}, {"d": 2, "t": "frac", "q": "👾 7/3 + 4/3 = ?", "a": "3 2/3", "h": "Same bottom numbers? Add or subtract the top numbers only. The bottom stays the same.", "s": "7/3 + 4/3 = 3 2/3"}, {"d": 2, "t": "frac", "q": "👾 5/8 + 7/8 = ?", "a": "1 1/2", "h": "Same bottom numbers? Add or subtract the top numbers only. The bottom stays the same.", "s": "5/8 + 7/8 = 1 1/2"}, {"d": 2, "t": "frac", "q": "👾 3/8 + 7/8 = ?", "a": "1 1/4", "h": "Same bottom numbers? Add or subtract the top numbers only. The bottom stays the same.", "s": "3/8 + 7/8 = 1 1/4"}, {"d": 2, "t": "frac", "q": "👾 7/6 + 4/6 = ?", "a": "1 5/6", "h": "Change the fractions so they have the same bottom number first.", "s": "7/6 + 4/6 = 1 5/6"}, {"d": 2, "t": "frac", "q": "👾 5/3 + 2/3 = ?", "a": "2 1/3", "h": "Same bottom numbers? Add or subtract the top numbers only. The bottom stays the same.", "s": "5/3 + 2/3 = 2 1/3"}, {"d": 2, "t": "frac", "q": "👾 9/5 + 3/5 = ?", "a": "2 2/5", "h": "Same bottom numbers? Add or subtract the top numbers only. The bottom stays the same.", "s": "9/5 + 3/5 = 2 2/5"}, {"d": 2, "t": "frac", "q": "👾 7/5 + 4/5 = ?", "a": "2 1/5", "h": "Same bottom numbers? Add or subtract the top numbers only. The bottom stays the same.", "s": "7/5 + 4/5 = 2 1/5"}, {"d": 2, "t": "frac", "q": "👾 3/4 + 5/8 = ?", "a": "1 3/8", "h": "Change the fractions so they have the same bottom number first.", "s": "3/4 + 5/8 = 1 3/8"}, {"d": 2, "t": "frac", "q": "👾 5/4 + 3/8 = ?", "a": "1 5/8", "h": "Change the fractions so they have the same bottom number first.", "s": "5/4 + 3/8 = 1 5/8"}, {"d": 2, "t": "frac", "q": "👾 7/4 + 1/8 = ?", "a": "1 7/8", "h": "Change the fractions so they have the same bottom number first.", "s": "7/4 + 1/8 = 1 7/8"}, {"d": 2, "t": "frac", "q": "👾 5/6 + 1/3 = ?", "a": "1 1/6", "h": "Change the fractions so they have the same bottom number first.", "s": "5/6 + 1/3 = 1 1/6"}, {"d": 2, "t": "frac", "q": "👾 7/6 + 1/3 = ?", "a": "1 1/2", "h": "Change the fractions so they have the same bottom number first.", "s": "7/6 + 1/3 = 1 1/2"}, {"d": 2, "t": "frac", "q": "👾 5/4 + 1/2 = ?", "a": "1 3/4", "h": "Change the fractions so they have the same bottom number first.", "s": "5/4 + 1/2 = 1 3/4"}, {"d": 2, "t": "frac", "q": "👾 11/4 − 5/4 = ?", "a": "1 1/2", "h": "Same bottom numbers? Add or subtract the top numbers only. The bottom stays the same.", "s": "11/4 − 5/4 = 1 1/2"}, {"d": 2, "t": "frac", "q": "👾 13/4 − 7/4 = ?", "a": "1 1/2", "h": "Same bottom numbers? Add or subtract the top numbers only. The bottom stays the same.", "s": "13/4 − 7/4 = 1 1/2"}, {"d": 2, "t": "frac", "q": "👾 11/6 − 4/6 = ?", "a": "1 1/6", "h": "Change the fractions so they have the same bottom number first.", "s": "11/6 − 4/6 = 1 1/6"}, {"d": 2, "t": "frac", "q": "👾 13/8 − 3/8 = ?", "a": "1 1/4", "h": "Same bottom numbers? Add or subtract the top numbers only. The bottom stays the same.", "s": "13/8 − 3/8 = 1 1/4"}, {"d": 2, "t": "frac", "q": "👾 7/3 − 2/3 = ?", "a": "1 2/3", "h": "Same bottom numbers? Add or subtract the top numbers only. The bottom stays the same.", "s": "7/3 − 2/3 = 1 2/3"}, {"d": 3, "t": "frac", "q": "👾 2 1/2 + 1 1/4 = ?", "a": "3 3/4", "h": "Add or subtract the wholes and the fractions. Make the bottom numbers the same first.", "s": "2 1/2 + 1 1/4 = 3 3/4"}, {"d": 3, "t": "frac", "q": "👾 3 1/4 + 1 1/2 = ?", "a": "4 3/4", "h": "Add or subtract the wholes and the fractions. Make the bottom numbers the same first.", "s": "3 1/4 + 1 1/2 = 4 3/4"}, {"d": 3, "t": "frac", "q": "👾 2 2/3 + 1 1/2 = ?", "a": "4 1/6", "h": "Add or subtract the wholes and the fractions. Make the bottom numbers the same first.", "s": "2 2/3 + 1 1/2 = 4 1/6"}, {"d": 3, "t": "frac", "q": "👾 3 3/4 − 1 1/2 = ?", "a": "2 1/4", "h": "Add or subtract the wholes and the fractions. Make the bottom numbers the same first.", "s": "3 3/4 − 1 1/2 = 2 1/4"}, {"d": 3, "t": "frac", "q": "👾 4 1/3 − 1 2/3 = ?", "a": "2 2/3", "h": "Add or subtract the wholes and the fractions. Make the bottom numbers the same first.", "s": "4 1/3 − 1 2/3 = 2 2/3"}, {"d": 3, "t": "frac", "q": "👾 3 1/2 − 1 3/4 = ?", "a": "1 3/4", "h": "Add or subtract the wholes and the fractions. Make the bottom numbers the same first.", "s": "3 1/2 − 1 3/4 = 1 3/4"}, {"d": 3, "t": "frac", "q": "👾 5 1/3 − 2 2/3 = ?", "a": "2 2/3", "h": "Add or subtract the wholes and the fractions. Make the bottom numbers the same first.", "s": "5 1/3 − 2 2/3 = 2 2/3"}, {"d": 1, "t": "frac", "q": "🐉 1/5 + 2/5 = ?", "a": "3/5", "h": "Same bottom numbers? Add or subtract the top numbers only. The bottom stays the same.", "s": "1/5 + 2/5 = 3/5"}, {"d": 1, "t": "frac", "q": "🐉 3/7 + 2/7 = ?", "a": "5/7", "h": "Same bottom numbers? Add or subtract the top numbers only. The bottom stays the same.", "s": "3/7 + 2/7 = 5/7"}, {"d": 1, "t": "frac", "q": "🐉 5/8 − 2/8 = ?", "a": "3/8", "h": "Change the fractions so they have the same bottom number first.", "s": "5/8 − 2/8 = 3/8"}, {"d": 1, "t": "frac", "q": "🐉 7/9 − 4/9 = ?", "a": "3/9", "h": "Same bottom numbers? Add or subtract the top numbers only. The bottom stays the same.", "s": "7/9 − 4/9 = 1/3"}, {"d": 1, "t": "frac", "q": "🐉 4/12 + 5/12 = ?", "a": "9/12", "h": "Change the fractions so they have the same bottom number first.", "s": "4/12 + 5/12 = 3/4"}, {"d": 2, "t": "frac", "q": "🐉 1/2 + 1/4 = ?", "a": "3/4", "h": "Change the fractions so they have the same bottom number first.", "s": "1/2 + 1/4 = 3/4"}, {"d": 2, "t": "frac", "q": "🐉 1/3 + 1/6 = ?", "a": "1/2", "h": "Change the fractions so they have the same bottom number first.", "s": "1/3 + 1/6 = 1/2"}, {"d": 2, "t": "frac", "q": "🐉 3/4 − 1/8 = ?", "a": "5/8", "h": "Change the fractions so they have the same bottom number first.", "s": "3/4 − 1/8 = 5/8"}, {"d": 2, "t": "frac", "q": "🐉 5/6 − 2/3 = ?", "a": "1/6", "h": "Change the fractions so they have the same bottom number first.", "s": "5/6 − 2/3 = 1/6"}, {"d": 2, "t": "frac", "q": "🐉 1/4 + 3/8 = ?", "a": "5/8", "h": "Change the fractions so they have the same bottom number first.", "s": "1/4 + 3/8 = 5/8"}, {"d": 3, "t": "frac", "q": "🐉 2/3 + 3/4 = ?", "a": "17/12", "h": "Change the fractions so they have the same bottom number first.", "s": "2/3 + 3/4 = 1 5/12"}, {"d": 3, "t": "frac", "q": "🐉 7/8 − 1/4 = ?", "a": "5/8", "h": "Change the fractions so they have the same bottom number first.", "s": "7/8 − 1/4 = 5/8"}, {"d": 3, "t": "frac", "q": "🐉 5/6 + 1/4 = ?", "a": "13/12", "h": "Change the fractions so they have the same bottom number first.", "s": "5/6 + 1/4 = 1 1/12"}, {"d": 3, "t": "frac", "q": "🐉 11/12 − 2/3 = ?", "a": "1/4", "h": "Change the fractions so they have the same bottom number first.", "s": "11/12 − 2/3 = 1/4"}, {"d": 3, "t": "frac", "q": "🐉 3/4 + 1/6 = ?", "a": "11/12", "h": "Change the fractions so they have the same bottom number first.", "s": "3/4 + 1/6 = 11/12"}], "10": [{"d": 1, "t": "frac", "q": "1/2 × 4 = ?", "a": "2", "h": "Divide the whole number by the bottom number, then multiply by the top number.", "s": "4 ÷ 2 = 2\n2 × 1 = 2"}, {"d": 1, "t": "frac", "q": "1/3 × 6 = ?", "a": "2", "h": "Divide the whole number by the bottom number, then multiply by the top number.", "s": "6 ÷ 3 = 2\n2 × 1 = 2"}, {"d": 1, "t": "frac", "q": "1/4 × 8 = ?", "a": "2", "h": "Divide the whole number by the bottom number, then multiply by the top number.", "s": "8 ÷ 4 = 2\n2 × 1 = 2"}, {"d": 1, "t": "frac", "q": "2/3 × 6 = ?", "a": "4", "h": "Divide the whole number by the bottom number, then multiply by the top number.", "s": "6 ÷ 3 = 2\n2 × 2 = 4"}, {"d": 1, "t": "frac", "q": "3/4 × 8 = ?", "a": "6", "h": "Divide the whole number by the bottom number, then multiply by the top number.", "s": "8 ÷ 4 = 2\n2 × 3 = 6"}, {"d": 1, "t": "frac", "q": "1/2 × 10 = ?", "a": "5", "h": "Divide the whole number by the bottom number, then multiply by the top number.", "s": "10 ÷ 2 = 5\n5 × 1 = 5"}, {"d": 1, "t": "frac", "q": "2/5 × 10 = ?", "a": "4", "h": "Divide the whole number by the bottom number, then multiply by the top number.", "s": "10 ÷ 5 = 2\n2 × 2 = 4"}, {"d": 1, "t": "frac", "q": "3/5 × 5 = ?", "a": "3", "h": "Divide the whole number by the bottom number, then multiply by the top number.", "s": "5 ÷ 5 = 1\n1 × 3 = 3"}, {"d": 1, "t": "frac", "q": "1/3 × 9 = ?", "a": "3", "h": "Divide the whole number by the bottom number, then multiply by the top number.", "s": "9 ÷ 3 = 3\n3 × 1 = 3"}, {"d": 1, "t": "frac", "q": "4/5 × 5 = ?", "a": "4", "h": "Divide the whole number by the bottom number, then multiply by the top number.", "s": "5 ÷ 5 = 1\n1 × 4 = 4"}, {"d": 2, "t": "frac", "q": "2/3 × 9 = ?", "a": "6", "h": "Divide the whole number by the bottom number, then multiply by the top number.", "s": "9 ÷ 3 = 3\n3 × 2 = 6"}, {"d": 2, "t": "frac", "q": "3/4 × 12 = ?", "a": "9", "h": "Divide the whole number by the bottom number, then multiply by the top number.", "s": "12 ÷ 4 = 3\n3 × 3 = 9"}, {"d": 2, "t": "frac", "q": "2/5 × 15 = ?", "a": "6", "h": "Divide the whole number by the bottom number, then multiply by the top number.", "s": "15 ÷ 5 = 3\n3 × 2 = 6"}, {"d": 2, "t": "frac", "q": "3/8 × 8 = ?", "a": "3", "h": "Divide the whole number by the bottom number, then multiply by the top number.", "s": "8 ÷ 8 = 1\n1 × 3 = 3"}, {"d": 2, "t": "frac", "q": "5/6 × 6 = ?", "a": "5", "h": "Divide the whole number by the bottom number, then multiply by the top number.", "s": "6 ÷ 6 = 1\n1 × 5 = 5"}, {"d": 2, "t": "frac", "q": "4/7 × 7 = ?", "a": "4", "h": "Divide the whole number by the bottom number, then multiply by the top number.", "s": "7 ÷ 7 = 1\n1 × 4 = 4"}, {"d": 2, "t": "frac", "q": "3/5 × 10 = ?", "a": "6", "h": "Divide the whole number by the bottom number, then multiply by the top number.", "s": "10 ÷ 5 = 2\n2 × 3 = 6"}, {"d": 2, "t": "frac", "q": "5/8 × 8 = ?", "a": "5", "h": "Divide the whole number by the bottom number, then multiply by the top number.", "s": "8 ÷ 8 = 1\n1 × 5 = 5"}, {"d": 2, "t": "frac", "q": "2/9 × 9 = ?", "a": "2", "h": "Divide the whole number by the bottom number, then multiply by the top number.", "s": "9 ÷ 9 = 1\n1 × 2 = 2"}, {"d": 2, "t": "frac", "q": "7/8 × 8 = ?", "a": "7", "h": "Divide the whole number by the bottom number, then multiply by the top number.", "s": "8 ÷ 8 = 1\n1 × 7 = 7"}, {"d": 2, "t": "frac", "q": "3/4 × 16 = ?", "a": "12", "h": "Divide the whole number by the bottom number, then multiply by the top number.", "s": "16 ÷ 4 = 4\n4 × 3 = 12"}, {"d": 2, "t": "frac", "q": "2/3 × 12 = ?", "a": "8", "h": "Divide the whole number by the bottom number, then multiply by the top number.", "s": "12 ÷ 3 = 4\n4 × 2 = 8"}, {"d": 2, "t": "frac", "q": "5/6 × 12 = ?", "a": "10", "h": "Divide the whole number by the bottom number, then multiply by the top number.", "s": "12 ÷ 6 = 2\n2 × 5 = 10"}, {"d": 2, "t": "frac", "q": "4/5 × 15 = ?", "a": "12", "h": "Divide the whole number by the bottom number, then multiply by the top number.", "s": "15 ÷ 5 = 3\n3 × 4 = 12"}, {"d": 2, "t": "frac", "q": "3/7 × 14 = ?", "a": "6", "h": "Divide the whole number by the bottom number, then multiply by the top number.", "s": "14 ÷ 7 = 2\n2 × 3 = 6"}, {"d": 2, "t": "frac", "q": "1/2 × 1/3 = ?", "a": "1/6", "h": "Multiply top × top and bottom × bottom. Then simplify.", "s": "(1 × 1)/(2 × 3) = 1/6 = 1/6"}, {"d": 2, "t": "frac", "q": "1/2 × 1/4 = ?", "a": "1/8", "h": "Multiply top × top and bottom × bottom. Then simplify.", "s": "(1 × 1)/(2 × 4) = 1/8 = 1/8"}, {"d": 2, "t": "frac", "q": "2/3 × 1/2 = ?", "a": "1/3", "h": "Multiply top × top and bottom × bottom. Then simplify.", "s": "(2 × 1)/(3 × 2) = 2/6 = 1/3"}, {"d": 2, "t": "frac", "q": "1/3 × 3/4 = ?", "a": "1/4", "h": "Multiply top × top and bottom × bottom. Then simplify.", "s": "(1 × 3)/(3 × 4) = 3/12 = 1/4"}, {"d": 2, "t": "frac", "q": "2/3 × 3/4 = ?", "a": "1/2", "h": "Multiply top × top and bottom × bottom. Then simplify.", "s": "(2 × 3)/(3 × 4) = 6/12 = 1/2"}, {"d": 2, "t": "frac", "q": "1/2 × 2/3 = ?", "a": "1/3", "h": "Multiply top × top and bottom × bottom. Then simplify.", "s": "(1 × 2)/(2 × 3) = 2/6 = 1/3"}, {"d": 2, "t": "frac", "q": "3/4 × 2/3 = ?", "a": "1/2", "h": "Multiply top × top and bottom × bottom. Then simplify.", "s": "(3 × 2)/(4 × 3) = 6/12 = 1/2"}, {"d": 2, "t": "frac", "q": "1/4 × 4/5 = ?", "a": "1/5", "h": "Multiply top × top and bottom × bottom. Then simplify.", "s": "(1 × 4)/(4 × 5) = 4/20 = 1/5"}, {"d": 3, "t": "frac", "q": "2/5 × 5/6 = ?", "a": "1/3", "h": "Multiply top × top and bottom × bottom. Then simplify.", "s": "(2 × 5)/(5 × 6) = 10/30 = 1/3"}, {"d": 3, "t": "frac", "q": "3/5 × 5/9 = ?", "a": "1/3", "h": "Multiply top × top and bottom × bottom. Then simplify.", "s": "(3 × 5)/(5 × 9) = 15/45 = 1/3"}, {"d": 3, "t": "frac", "q": "2/3 × 3/5 = ?", "a": "2/5", "h": "Multiply top × top and bottom × bottom. Then simplify.", "s": "(2 × 3)/(3 × 5) = 6/15 = 2/5"}, {"d": 3, "t": "frac", "q": "3/4 × 4/9 = ?", "a": "1/3", "h": "Multiply top × top and bottom × bottom. Then simplify.", "s": "(3 × 4)/(4 × 9) = 12/36 = 1/3"}, {"d": 3, "t": "frac", "q": "5/6 × 3/5 = ?", "a": "1/2", "h": "Multiply top × top and bottom × bottom. Then simplify.", "s": "(5 × 3)/(6 × 5) = 15/30 = 1/2"}, {"d": 3, "t": "frac", "q": "4/5 × 5/8 = ?", "a": "1/2", "h": "Multiply top × top and bottom × bottom. Then simplify.", "s": "(4 × 5)/(5 × 8) = 20/40 = 1/2"}, {"d": 3, "t": "frac", "q": "3/8 × 4/9 = ?", "a": "1/6", "h": "Multiply top × top and bottom × bottom. Then simplify.", "s": "(3 × 4)/(8 × 9) = 12/72 = 1/6"}, {"d": 3, "t": "frac", "q": "7/8 × 4/7 = ?", "a": "1/2", "h": "Multiply top × top and bottom × bottom. Then simplify.", "s": "(7 × 4)/(8 × 7) = 28/56 = 1/2"}, {"d": 3, "t": "frac", "q": "5/6 × 2/5 = ?", "a": "1/3", "h": "Multiply top × top and bottom × bottom. Then simplify.", "s": "(5 × 2)/(6 × 5) = 10/30 = 1/3"}, {"d": 3, "t": "frac", "q": "4/7 × 7/8 = ?", "a": "1/2", "h": "Multiply top × top and bottom × bottom. Then simplify.", "s": "(4 × 7)/(7 × 8) = 28/56 = 1/2"}, {"d": 3, "t": "frac", "q": "3/5 × 5/6 = ?", "a": "1/2", "h": "Multiply top × top and bottom × bottom. Then simplify.", "s": "(3 × 5)/(5 × 6) = 15/30 = 1/2"}, {"d": 3, "t": "frac", "q": "2/9 × 3/4 = ?", "a": "1/6", "h": "Multiply top × top and bottom × bottom. Then simplify.", "s": "(2 × 3)/(9 × 4) = 6/36 = 1/6"}, {"d": 3, "t": "frac", "q": "5/8 × 4/5 = ?", "a": "1/2", "h": "Multiply top × top and bottom × bottom. Then simplify.", "s": "(5 × 4)/(8 × 5) = 20/40 = 1/2"}, {"d": 3, "t": "frac", "q": "7/9 × 3/7 = ?", "a": "1/3", "h": "Multiply top × top and bottom × bottom. Then simplify.", "s": "(7 × 3)/(9 × 7) = 21/63 = 1/3"}, {"d": 3, "t": "frac", "q": "4/9 × 3/8 = ?", "a": "1/6", "h": "Multiply top × top and bottom × bottom. Then simplify.", "s": "(4 × 3)/(9 × 8) = 12/72 = 1/6"}, {"d": 3, "t": "frac", "q": "5/7 × 7/10 = ?", "a": "1/2", "h": "Multiply top × top and bottom × bottom. Then simplify.", "s": "(5 × 7)/(7 × 10) = 35/70 = 1/2"}, {"d": 3, "t": "frac", "q": "8/9 × 3/4 = ?", "a": "2/3", "h": "Multiply top × top and bottom × bottom. Then simplify.", "s": "(8 × 3)/(9 × 4) = 24/36 = 2/3"}, {"d": 2, "t": "mc", "q": "🃏 Fraction Snap! The card says 1/2 × 6 = 3. Is the card correct?", "o": ["SNAP! It's correct", "No snap. It's wrong"], "a": "SNAP! It's correct", "h": "Work out the real product first, then compare it with the card.", "s": "1/2 × 6 = 3"}, {"d": 2, "t": "mc", "q": "🃏 Fraction Snap! The card says 2/3 × 9 = 8. Is the card correct?", "o": ["SNAP! It's correct", "No snap. It's wrong"], "a": "No snap. It's wrong", "h": "Work out the real product first, then compare it with the card.", "s": "2/3 × 9 = 6"}, {"d": 2, "t": "mc", "q": "🃏 Fraction Snap! The card says 3/4 × 8 = 6. Is the card correct?", "o": ["SNAP! It's correct", "No snap. It's wrong"], "a": "SNAP! It's correct", "h": "Work out the real product first, then compare it with the card.", "s": "3/4 × 8 = 6"}, {"d": 2, "t": "mc", "q": "🃏 Fraction Snap! The card says 1/3 × 12 = 3. Is the card correct?", "o": ["SNAP! It's correct", "No snap. It's wrong"], "a": "No snap. It's wrong", "h": "Work out the real product first, then compare it with the card.", "s": "1/3 × 12 = 4"}, {"d": 2, "t": "mc", "q": "🃏 Fraction Snap! The card says 2/5 × 10 = 4. Is the card correct?", "o": ["SNAP! It's correct", "No snap. It's wrong"], "a": "SNAP! It's correct", "h": "Work out the real product first, then compare it with the card.", "s": "2/5 × 10 = 4"}, {"d": 2, "t": "mc", "q": "🃏 Fraction Snap! The card says 3/5 × 15 = 10. Is the card correct?", "o": ["SNAP! It's correct", "No snap. It's wrong"], "a": "No snap. It's wrong", "h": "Work out the real product first, then compare it with the card.", "s": "3/5 × 15 = 9"}, {"d": 2, "t": "mc", "q": "🃏 Fraction Snap! The card says 1/2 × 1/3 = 1/6. Is the card correct?", "o": ["SNAP! It's correct", "No snap. It's wrong"], "a": "SNAP! It's correct", "h": "Work out the real product first, then compare it with the card.", "s": "1/2 × 1/3 = 1/6"}, {"d": 2, "t": "mc", "q": "🃏 Fraction Snap! The card says 2/3 × 3/4 = 6/12. Is the card correct?", "o": ["SNAP! It's correct", "No snap. It's wrong"], "a": "SNAP! It's correct", "h": "Work out the real product first, then compare it with the card.", "s": "2/3 × 3/4 = 1/2"}, {"d": 2, "t": "mc", "q": "🃏 Fraction Snap! The card says 3/4 × 2/3 = 1/3. Is the card correct?", "o": ["SNAP! It's correct", "No snap. It's wrong"], "a": "No snap. It's wrong", "h": "Work out the real product first, then compare it with the card.", "s": "3/4 × 2/3 = 1/2"}, {"d": 2, "t": "mc", "q": "🃏 Fraction Snap! The card says 1/2 × 4/5 = 2/5. Is the card correct?", "o": ["SNAP! It's correct", "No snap. It's wrong"], "a": "SNAP! It's correct", "h": "Work out the real product first, then compare it with the card.", "s": "1/2 × 4/5 = 2/5"}, {"d": 2, "t": "mc", "q": "🃏 Fraction Snap! The card says 2/3 × 1/4 = 2/7. Is the card correct?", "o": ["SNAP! It's correct", "No snap. It's wrong"], "a": "No snap. It's wrong", "h": "Work out the real product first, then compare it with the card.", "s": "2/3 × 1/4 = 1/6"}, {"d": 2, "t": "mc", "q": "🃏 Fraction Snap! The card says 3/5 × 5/6 = 1/2. Is the card correct?", "o": ["SNAP! It's correct", "No snap. It's wrong"], "a": "SNAP! It's correct", "h": "Work out the real product first, then compare it with the card.", "s": "3/5 × 5/6 = 1/2"}], "11": [{"d": 1, "t": "mc", "q": "What is 0.3 in words?", "o": ["Three tenths", "Three hundredths", "Thirty", "Three"], "a": "Three tenths", "h": "After the decimal point: tenths, then hundredths.", "s": ""}, {"d": 1, "t": "num", "q": "Write 7 tenths as a decimal.", "a": 0.7, "h": "After the decimal point: tenths, then hundredths.", "s": ""}, {"d": 1, "t": "mc", "q": "What is 0.25 in words?", "o": ["Twenty-five hundredths", "Twenty-five tenths", "Two and five tenths", "Twenty-five"], "a": "Twenty-five hundredths", "h": "After the decimal point: tenths, then hundredths.", "s": ""}, {"d": 1, "t": "num", "q": "Which digit is in the tenths place in 4.67?", "a": 6.0, "h": "After the decimal point: tenths, then hundredths.", "s": ""}, {"d": 1, "t": "num", "q": "Which digit is in the hundredths place in 3.52?", "a": 2.0, "h": "After the decimal point: tenths, then hundredths.", "s": ""}, {"d": 1, "t": "mc", "q": "Is 0.5 the same as 5 tenths?", "o": ["Yes", "No"], "a": "Yes", "h": "After the decimal point: tenths, then hundredths.", "s": ""}, {"d": 1, "t": "num", "q": "Write 6 hundredths as a decimal.", "a": 0.06, "h": "After the decimal point: tenths, then hundredths.", "s": ""}, {"d": 1, "t": "mc", "q": "What is 0.9 in words?", "o": ["Nine tenths", "Nine hundredths", "Ninety", "Nine"], "a": "Nine tenths", "h": "After the decimal point: tenths, then hundredths.", "s": ""}, {"d": 1, "t": "num", "q": "Write 4 hundredths as a decimal.", "a": 0.04, "h": "After the decimal point: tenths, then hundredths.", "s": ""}, {"d": 1, "t": "num", "q": "Which digit is in the tenths place in 0.81?", "a": 8.0, "h": "After the decimal point: tenths, then hundredths.", "s": ""}, {"d": 2, "t": "mc", "q": "Which is larger: 0.45 or 0.5?", "o": ["0.45", "0.5"], "a": "0.5", "h": "Give both numbers the same number of decimal places, then compare.", "s": ""}, {"d": 2, "t": "mc", "q": "Which is smaller: 0.08 or 0.1?", "o": ["0.08", "0.1"], "a": "0.08", "h": "Give both numbers the same number of decimal places, then compare.", "s": ""}, {"d": 2, "t": "mc", "q": "Arrange from smallest to largest: 0.3, 0.03, 0.33", "o": ["0.03, 0.3, 0.33", "0.3, 0.03, 0.33", "0.33, 0.3, 0.03"], "a": "0.03, 0.3, 0.33", "h": "Give both numbers the same number of decimal places, then compare.", "s": ""}, {"d": 2, "t": "mc", "q": "Which is larger: 1.09 or 1.9?", "o": ["1.09", "1.9"], "a": "1.9", "h": "Give both numbers the same number of decimal places, then compare.", "s": ""}, {"d": 2, "t": "mc", "q": "Which is smaller: 2.45 or 2.54?", "o": ["2.45", "2.54"], "a": "2.45", "h": "Give both numbers the same number of decimal places, then compare.", "s": ""}, {"d": 2, "t": "mc", "q": "Which is larger: 0.250 or 0.25?", "o": ["0.250", "0.25", "They are equal"], "a": "They are equal", "h": "Give both numbers the same number of decimal places, then compare.", "s": ""}, {"d": 2, "t": "mc", "q": "Arrange from smallest to largest: 1.1, 1.01, 1.11", "o": ["1.01, 1.1, 1.11", "1.1, 1.01, 1.11", "1.11, 1.1, 1.01"], "a": "1.01, 1.1, 1.11", "h": "Give both numbers the same number of decimal places, then compare.", "s": ""}, {"d": 2, "t": "mc", "q": "Which is larger: 3.07 or 3.7?", "o": ["3.07", "3.7"], "a": "3.7", "h": "Give both numbers the same number of decimal places, then compare.", "s": ""}, {"d": 2, "t": "mc", "q": "Which is smaller: 0.99 or 1.0?", "o": ["0.99", "1.0"], "a": "0.99", "h": "Give both numbers the same number of decimal places, then compare.", "s": ""}, {"d": 2, "t": "mc", "q": "Arrange from largest to smallest: 0.6, 0.06, 0.66", "o": ["0.66, 0.6, 0.06", "0.06, 0.6, 0.66", "0.6, 0.66, 0.06"], "a": "0.66, 0.6, 0.06", "h": "Give both numbers the same number of decimal places, then compare.", "s": ""}, {"d": 2, "t": "num", "q": "Round 3.67 to 1 decimal place.", "a": 3.7, "h": "Look at the digit just after the place you are rounding to. 5 or more: round up.", "s": ""}, {"d": 2, "t": "num", "q": "Round 0.45 to 1 decimal place.", "a": 0.5, "h": "Look at the digit just after the place you are rounding to. 5 or more: round up.", "s": ""}, {"d": 2, "t": "num", "q": "Round 2.34 to 1 decimal place.", "a": 2.3, "h": "Look at the digit just after the place you are rounding to. 5 or more: round up.", "s": ""}, {"d": 2, "t": "num", "q": "Round 1.85 to 1 decimal place.", "a": 1.9, "h": "Look at the digit just after the place you are rounding to. 5 or more: round up.", "s": ""}, {"d": 2, "t": "num", "q": "Round 4.72 to 1 decimal place.", "a": 4.7, "h": "Look at the digit just after the place you are rounding to. 5 or more: round up.", "s": ""}, {"d": 3, "t": "num", "q": "Round 0.349 to 2 decimal places.", "a": 0.35, "h": "Look at the digit just after the place you are rounding to. 5 or more: round up.", "s": ""}, {"d": 3, "t": "num", "q": "Round 5.555 to 2 decimal places.", "a": 5.56, "h": "Look at the digit just after the place you are rounding to. 5 or more: round up.", "s": ""}, {"d": 3, "t": "num", "q": "Round 3.204 to 2 decimal places.", "a": 3.2, "h": "Look at the digit just after the place you are rounding to. 5 or more: round up.", "s": ""}, {"d": 3, "t": "num", "q": "Round 8.96 to 1 decimal place.", "a": 9.0, "h": "Look at the digit just after the place you are rounding to. 5 or more: round up.", "s": ""}, {"d": 3, "t": "num", "q": "Round 0.075 to 2 decimal places.", "a": 0.08, "h": "Look at the digit just after the place you are rounding to. 5 or more: round up.", "s": ""}], "12": [{"d": 1, "t": "num", "q": "2.5 + 1.3 = ?", "a": 3.8, "h": "Line up the decimal points. Work it out like whole numbers, then put the point back.", "s": "2.5 + 1.3 = 3.8"}, {"d": 1, "t": "num", "q": "4.7 + 2.1 = ?", "a": 6.8, "h": "Line up the decimal points. Work it out like whole numbers, then put the point back.", "s": "4.7 + 2.1 = 6.8"}, {"d": 1, "t": "num", "q": "0.8 + 0.7 = ?", "a": 1.5, "h": "Line up the decimal points. Work it out like whole numbers, then put the point back.", "s": "0.8 + 0.7 = 1.5"}, {"d": 1, "t": "num", "q": "3.4 + 2.5 = ?", "a": 5.9, "h": "Line up the decimal points. Work it out like whole numbers, then put the point back.", "s": "3.4 + 2.5 = 5.9"}, {"d": 1, "t": "num", "q": "1.6 + 1.4 = ?", "a": 3.0, "h": "Line up the decimal points. Work it out like whole numbers, then put the point back.", "s": "1.6 + 1.4 = 3.0"}, {"d": 2, "t": "num", "q": "5.25 + 3.4 = ?", "a": 8.65, "h": "Line up the decimal points. Work it out like whole numbers, then put the point back.", "s": "5.25 + 3.4 = 8.65"}, {"d": 2, "t": "num", "q": "3.75 + 2.8 = ?", "a": 6.55, "h": "Line up the decimal points. Work it out like whole numbers, then put the point back.", "s": "3.75 + 2.8 = 6.55"}, {"d": 2, "t": "num", "q": "0.45 + 0.35 = ?", "a": 0.8, "h": "Line up the decimal points. Work it out like whole numbers, then put the point back.", "s": "0.45 + 0.35 = 0.80"}, {"d": 2, "t": "num", "q": "1.25 + 2.50 = ?", "a": 3.75, "h": "Line up the decimal points. Work it out like whole numbers, then put the point back.", "s": "1.25 + 2.50 = 3.75"}, {"d": 3, "t": "num", "q": "4.15 + 3.25 = ?", "a": 7.4, "h": "Line up the decimal points. Work it out like whole numbers, then put the point back.", "s": "4.15 + 3.25 = 7.40"}, {"d": 3, "t": "num", "q": "6.08 + 1.42 = ?", "a": 7.5, "h": "Line up the decimal points. Work it out like whole numbers, then put the point back.", "s": "6.08 + 1.42 = 7.50"}, {"d": 3, "t": "num", "q": "2.35 + 4.15 = ?", "a": 6.5, "h": "Line up the decimal points. Work it out like whole numbers, then put the point back.", "s": "2.35 + 4.15 = 6.50"}, {"d": 1, "t": "num", "q": "8.4 − 3.2 = ?", "a": 5.2, "h": "Line up the decimal points. Work it out like whole numbers, then put the point back.", "s": "8.4 − 3.2 = 5.2"}, {"d": 1, "t": "num", "q": "6.9 − 2.4 = ?", "a": 4.5, "h": "Line up the decimal points. Work it out like whole numbers, then put the point back.", "s": "6.9 − 2.4 = 4.5"}, {"d": 1, "t": "num", "q": "9.0 − 4.5 = ?", "a": 4.5, "h": "Line up the decimal points. Work it out like whole numbers, then put the point back.", "s": "9.0 − 4.5 = 4.5"}, {"d": 1, "t": "num", "q": "5.8 − 2.3 = ?", "a": 3.5, "h": "Line up the decimal points. Work it out like whole numbers, then put the point back.", "s": "5.8 − 2.3 = 3.5"}, {"d": 1, "t": "num", "q": "7.5 − 3.0 = ?", "a": 4.5, "h": "Line up the decimal points. Work it out like whole numbers, then put the point back.", "s": "7.5 − 3.0 = 4.5"}, {"d": 2, "t": "num", "q": "9.3 − 4.7 = ?", "a": 4.6, "h": "Line up the decimal points. Work it out like whole numbers, then put the point back.", "s": "9.3 − 4.7 = 4.6"}, {"d": 2, "t": "num", "q": "6.0 − 2.35 = ?", "a": 3.65, "h": "Line up the decimal points. Work it out like whole numbers, then put the point back.", "s": "6.0 − 2.35 = 3.65"}, {"d": 2, "t": "num", "q": "8.75 − 3.25 = ?", "a": 5.5, "h": "Line up the decimal points. Work it out like whole numbers, then put the point back.", "s": "8.75 − 3.25 = 5.50"}, {"d": 2, "t": "num", "q": "5.40 − 2.15 = ?", "a": 3.25, "h": "Line up the decimal points. Work it out like whole numbers, then put the point back.", "s": "5.40 − 2.15 = 3.25"}, {"d": 3, "t": "num", "q": "7.80 − 4.30 = ?", "a": 3.5, "h": "Line up the decimal points. Work it out like whole numbers, then put the point back.", "s": "7.80 − 4.30 = 3.50"}, {"d": 3, "t": "num", "q": "9.05 − 4.05 = ?", "a": 5.0, "h": "Line up the decimal points. Work it out like whole numbers, then put the point back.", "s": "9.05 − 4.05 = 5.00"}, {"d": 3, "t": "num", "q": "6.50 − 1.75 = ?", "a": 4.75, "h": "Line up the decimal points. Work it out like whole numbers, then put the point back.", "s": "6.50 − 1.75 = 4.75"}, {"d": 2, "t": "num", "q": "0.4 × 3 = ?", "a": 1.2, "h": "Line up the decimal points. Work it out like whole numbers, then put the point back.", "s": "0.4 × 3 = 1.2"}, {"d": 2, "t": "num", "q": "1.5 × 4 = ?", "a": 6.0, "h": "Line up the decimal points. Work it out like whole numbers, then put the point back.", "s": "1.5 × 4 = 6.0"}, {"d": 2, "t": "num", "q": "2.5 × 2 = ?", "a": 5.0, "h": "Line up the decimal points. Work it out like whole numbers, then put the point back.", "s": "2.5 × 2 = 5.0"}, {"d": 2, "t": "num", "q": "0.6 × 5 = ?", "a": 3.0, "h": "Line up the decimal points. Work it out like whole numbers, then put the point back.", "s": "0.6 × 5 = 3.0"}, {"d": 2, "t": "num", "q": "1.2 × 5 = ?", "a": 6.0, "h": "Line up the decimal points. Work it out like whole numbers, then put the point back.", "s": "1.2 × 5 = 6.0"}, {"d": 2, "t": "num", "q": "0.8 × 4 = ?", "a": 3.2, "h": "Line up the decimal points. Work it out like whole numbers, then put the point back.", "s": "0.8 × 4 = 3.2"}, {"d": 2, "t": "num", "q": "2.5 × 4 = ?", "a": 10.0, "h": "Line up the decimal points. Work it out like whole numbers, then put the point back.", "s": "2.5 × 4 = 10.0"}, {"d": 2, "t": "num", "q": "1.5 × 6 = ?", "a": 9.0, "h": "Line up the decimal points. Work it out like whole numbers, then put the point back.", "s": "1.5 × 6 = 9.0"}, {"d": 2, "t": "num", "q": "0.25 × 4 = ?", "a": 1.0, "h": "Line up the decimal points. Work it out like whole numbers, then put the point back.", "s": "0.25 × 4 = 1.0"}, {"d": 3, "t": "num", "q": "1.25 × 4 = ?", "a": 5.0, "h": "Line up the decimal points. Work it out like whole numbers, then put the point back.", "s": "1.25 × 4 = 5.0"}, {"d": 3, "t": "num", "q": "0.75 × 4 = ?", "a": 3.0, "h": "Line up the decimal points. Work it out like whole numbers, then put the point back.", "s": "0.75 × 4 = 3.0"}, {"d": 3, "t": "num", "q": "2.25 × 2 = ?", "a": 4.5, "h": "Line up the decimal points. Work it out like whole numbers, then put the point back.", "s": "2.25 × 2 = 4.5"}, {"d": 2, "t": "num", "q": "4.8 ÷ 4 = ?", "a": 1.2, "h": "Line up the decimal points. Work it out like whole numbers, then put the point back.", "s": "4.8 ÷ 4 = 1.2"}, {"d": 2, "t": "num", "q": "6.0 ÷ 3 = ?", "a": 2.0, "h": "Line up the decimal points. Work it out like whole numbers, then put the point back.", "s": "6.0 ÷ 3 = 2.0"}, {"d": 2, "t": "num", "q": "7.5 ÷ 5 = ?", "a": 1.5, "h": "Line up the decimal points. Work it out like whole numbers, then put the point back.", "s": "7.5 ÷ 5 = 1.5"}, {"d": 2, "t": "num", "q": "9.6 ÷ 3 = ?", "a": 3.2, "h": "Line up the decimal points. Work it out like whole numbers, then put the point back.", "s": "9.6 ÷ 3 = 3.2"}, {"d": 2, "t": "num", "q": "6.4 ÷ 2 = ?", "a": 3.2, "h": "Line up the decimal points. Work it out like whole numbers, then put the point back.", "s": "6.4 ÷ 2 = 3.2"}, {"d": 2, "t": "num", "q": "8.1 ÷ 9 = ?", "a": 0.9, "h": "Line up the decimal points. Work it out like whole numbers, then put the point back.", "s": "8.1 ÷ 9 = 0.9"}, {"d": 2, "t": "num", "q": "7.2 ÷ 6 = ?", "a": 1.2, "h": "Line up the decimal points. Work it out like whole numbers, then put the point back.", "s": "7.2 ÷ 6 = 1.2"}, {"d": 2, "t": "num", "q": "9.0 ÷ 6 = ?", "a": 1.5, "h": "Line up the decimal points. Work it out like whole numbers, then put the point back.", "s": "9.0 ÷ 6 = 1.5"}, {"d": 2, "t": "num", "q": "4.5 ÷ 3 = ?", "a": 1.5, "h": "Line up the decimal points. Work it out like whole numbers, then put the point back.", "s": "4.5 ÷ 3 = 1.5"}, {"d": 3, "t": "num", "q": "8.4 ÷ 4 = ?", "a": 2.1, "h": "Line up the decimal points. Work it out like whole numbers, then put the point back.", "s": "8.4 ÷ 4 = 2.1"}, {"d": 3, "t": "num", "q": "6.6 ÷ 3 = ?", "a": 2.2, "h": "Line up the decimal points. Work it out like whole numbers, then put the point back.", "s": "6.6 ÷ 3 = 2.2"}, {"d": 3, "t": "num", "q": "9.9 ÷ 9 = ?", "a": 1.1, "h": "Line up the decimal points. Work it out like whole numbers, then put the point back.", "s": "9.9 ÷ 9 = 1.1"}, {"d": 2, "t": "num", "q": "1.8 × 100 = ?", "a": 180.0, "h": "× 10, 100, 1000: move the digits 1, 2 or 3 places to the left. ÷: move them to the right.", "s": "1.8 × 100 = 180"}, {"d": 2, "t": "num", "q": "0.24 × 100 = ?", "a": 24.0, "h": "× 10, 100, 1000: move the digits 1, 2 or 3 places to the left. ÷: move them to the right.", "s": "0.24 × 100 = 24"}, {"d": 2, "t": "num", "q": "2.1 × 10 = ?", "a": 21.0, "h": "× 10, 100, 1000: move the digits 1, 2 or 3 places to the left. ÷: move them to the right.", "s": "2.1 × 10 = 21"}, {"d": 2, "t": "num", "q": "4.35 × 100 = ?", "a": 435.0, "h": "× 10, 100, 1000: move the digits 1, 2 or 3 places to the left. ÷: move them to the right.", "s": "4.35 × 100 = 435"}, {"d": 3, "t": "num", "q": "0.7 × 1000 = ?", "a": 700.0, "h": "× 10, 100, 1000: move the digits 1, 2 or 3 places to the left. ÷: move them to the right.", "s": "0.7 × 1000 = 700"}, {"d": 3, "t": "num", "q": "4.26 ÷ 1000 = ?", "a": 0.00426, "h": "× 10, 100, 1000: move the digits 1, 2 or 3 places to the left. ÷: move them to the right.", "s": "4.26 ÷ 1000 = 0.00426"}, {"d": 2, "t": "num", "q": "63 ÷ 10 = ?", "a": 6.3, "h": "× 10, 100, 1000: move the digits 1, 2 or 3 places to the left. ÷: move them to the right.", "s": "63 ÷ 10 = 6.3"}, {"d": 2, "t": "num", "q": "95 ÷ 10 = ?", "a": 9.5, "h": "× 10, 100, 1000: move the digits 1, 2 or 3 places to the left. ÷: move them to the right.", "s": "95 ÷ 10 = 9.5"}, {"d": 2, "t": "num", "q": "740 ÷ 100 = ?", "a": 7.4, "h": "× 10, 100, 1000: move the digits 1, 2 or 3 places to the left. ÷: move them to the right.", "s": "740 ÷ 100 = 7.4"}, {"d": 3, "t": "num", "q": "5600 ÷ 1000 = ?", "a": 5.6, "h": "× 10, 100, 1000: move the digits 1, 2 or 3 places to the left. ÷: move them to the right.", "s": "5600 ÷ 1000 = 5.6"}, {"d": 2, "t": "num", "q": "3.6 × 100 = ?", "a": 360.0, "h": "× 10, 100, 1000: move the digits 1, 2 or 3 places to the left. ÷: move them to the right.", "s": "3.6 × 100 = 360"}, {"d": 3, "t": "num", "q": "480 ÷ 1000 = ?", "a": 0.48, "h": "× 10, 100, 1000: move the digits 1, 2 or 3 places to the left. ÷: move them to the right.", "s": "480 ÷ 1000 = 0.48"}, {"d": 3, "t": "num", "q": "3.4 × 1000 = ?", "a": 3400.0, "h": "× 10, 100, 1000: move the digits 1, 2 or 3 places to the left. ÷: move them to the right.", "s": "3.4 × 1000 = 3400"}, {"d": 2, "t": "num", "q": "0.58 × 100 = ?", "a": 58.0, "h": "× 10, 100, 1000: move the digits 1, 2 or 3 places to the left. ÷: move them to the right.", "s": "0.58 × 100 = 58"}, {"d": 2, "t": "num", "q": "1.6 × 10 = ?", "a": 16.0, "h": "× 10, 100, 1000: move the digits 1, 2 or 3 places to the left. ÷: move them to the right.", "s": "1.6 × 10 = 16"}, {"d": 2, "t": "num", "q": "2.75 × 100 = ?", "a": 275.0, "h": "× 10, 100, 1000: move the digits 1, 2 or 3 places to the left. ÷: move them to the right.", "s": "2.75 × 100 = 275"}, {"d": 3, "t": "num", "q": "0.9 × 1000 = ?", "a": 900.0, "h": "× 10, 100, 1000: move the digits 1, 2 or 3 places to the left. ÷: move them to the right.", "s": "0.9 × 1000 = 900"}, {"d": 2, "t": "num", "q": "275 ÷ 100 = ?", "a": 2.75, "h": "× 10, 100, 1000: move the digits 1, 2 or 3 places to the left. ÷: move them to the right.", "s": "275 ÷ 100 = 2.75"}, {"d": 2, "t": "num", "q": "84 ÷ 10 = ?", "a": 8.4, "h": "× 10, 100, 1000: move the digits 1, 2 or 3 places to the left. ÷: move them to the right.", "s": "84 ÷ 10 = 8.4"}, {"d": 2, "t": "num", "q": "920 ÷ 100 = ?", "a": 9.2, "h": "× 10, 100, 1000: move the digits 1, 2 or 3 places to the left. ÷: move them to the right.", "s": "920 ÷ 100 = 9.2"}, {"d": 3, "t": "num", "q": "4800 ÷ 1000 = ?", "a": 4.8, "h": "× 10, 100, 1000: move the digits 1, 2 or 3 places to the left. ÷: move them to the right.", "s": "4800 ÷ 1000 = 4.8"}, {"d": 2, "t": "num", "q": "2.8 × 100 = ?", "a": 280.0, "h": "× 10, 100, 1000: move the digits 1, 2 or 3 places to the left. ÷: move them to the right.", "s": "2.8 × 100 = 280"}, {"d": 2, "t": "num", "q": "630 ÷ 100 = ?", "a": 6.3, "h": "× 10, 100, 1000: move the digits 1, 2 or 3 places to the left. ÷: move them to the right.", "s": "630 ÷ 100 = 6.3"}, {"d": 2, "t": "num", "q": "1.5 m = ___ cm", "a": 150.0, "h": "1 m = 100 cm. 1 km = 1000 m.", "s": "", "u": "cm"}, {"d": 2, "t": "num", "q": "2.3 m = ___ cm", "a": 230.0, "h": "1 m = 100 cm. 1 km = 1000 m.", "s": "", "u": "cm"}, {"d": 2, "t": "num", "q": "250 cm = ___ m", "a": 2.5, "h": "1 m = 100 cm. 1 km = 1000 m.", "s": "", "u": "m"}, {"d": 2, "t": "num", "q": "0.8 m = ___ cm", "a": 80.0, "h": "1 m = 100 cm. 1 km = 1000 m.", "s": "", "u": "cm"}, {"d": 2, "t": "num", "q": "640 cm = ___ m", "a": 6.4, "h": "1 m = 100 cm. 1 km = 1000 m.", "s": "", "u": "m"}, {"d": 2, "t": "num", "q": "2.5 km = ___ m", "a": 2500.0, "h": "1 m = 100 cm. 1 km = 1000 m.", "s": "", "u": "m"}, {"d": 2, "t": "num", "q": "1.8 km = ___ m", "a": 1800.0, "h": "1 m = 100 cm. 1 km = 1000 m.", "s": "", "u": "m"}, {"d": 2, "t": "num", "q": "3200 m = ___ km", "a": 3.2, "h": "1 m = 100 cm. 1 km = 1000 m.", "s": "", "u": "km"}, {"d": 2, "t": "num", "q": "4.2 km = ___ m", "a": 4200.0, "h": "1 m = 100 cm. 1 km = 1000 m.", "s": "", "u": "m"}, {"d": 2, "t": "num", "q": "1500 m = ___ km", "a": 1.5, "h": "1 m = 100 cm. 1 km = 1000 m.", "s": "", "u": "km"}, {"d": 2, "t": "num", "q": "2.4 km = ___ m", "a": 2400.0, "h": "1 m = 100 cm. 1 km = 1000 m.", "s": "", "u": "m"}, {"d": 2, "t": "num", "q": "0.6 kg = ___ g", "a": 600.0, "h": "1 kg = 1000 g. 1 L = 1000 mL.", "s": "", "u": "g"}, {"d": 2, "t": "num", "q": "0.85 kg = ___ g", "a": 850.0, "h": "1 kg = 1000 g. 1 L = 1000 mL.", "s": "", "u": "g"}, {"d": 2, "t": "num", "q": "2400 g = ___ kg", "a": 2.4, "h": "1 kg = 1000 g. 1 L = 1000 mL.", "s": "", "u": "kg"}, {"d": 2, "t": "num", "q": "0.3 kg = ___ g", "a": 300.0, "h": "1 kg = 1000 g. 1 L = 1000 mL.", "s": "", "u": "g"}, {"d": 2, "t": "num", "q": "1750 g = ___ kg", "a": 1.75, "h": "1 kg = 1000 g. 1 L = 1000 mL.", "s": "", "u": "kg"}, {"d": 2, "t": "num", "q": "0.75 L = ___ mL", "a": 750.0, "h": "1 kg = 1000 g. 1 L = 1000 mL.", "s": "", "u": "mL"}, {"d": 2, "t": "num", "q": "1.2 L = ___ mL", "a": 1200.0, "h": "1 kg = 1000 g. 1 L = 1000 mL.", "s": "", "u": "mL"}, {"d": 2, "t": "num", "q": "1250 mL = ___ L", "a": 1.25, "h": "1 kg = 1000 g. 1 L = 1000 mL.", "s": "", "u": "L"}, {"d": 2, "t": "num", "q": "0.45 L = ___ mL", "a": 450.0, "h": "1 kg = 1000 g. 1 L = 1000 mL.", "s": "", "u": "mL"}, {"d": 2, "t": "num", "q": "900 mL = ___ L", "a": 0.9, "h": "1 kg = 1000 g. 1 L = 1000 mL.", "s": "", "u": "L"}, {"d": 2, "t": "num", "q": "1.4 L = ___ mL", "a": 1400.0, "h": "1 kg = 1000 g. 1 L = 1000 mL.", "s": "", "u": "mL"}, {"d": 3, "t": "num", "q": "Art Class: a ribbon is 0.85 m long. What length goes on the label in cm?", "a": 85.0, "h": "1 m = 100 cm. 1 km = 1000 m.", "s": "0.85 × 100 = 85 cm", "u": "cm"}, {"d": 3, "t": "num", "q": "Sports Day: Aisha ran 2.75 km. What does the scoreboard show in metres?", "a": 2750.0, "h": "1 m = 100 cm. 1 km = 1000 m.", "s": "2.75 × 1000 = 2750 m", "u": "m"}, {"d": 3, "t": "num", "q": "Recipe Time: a jug needs 0.65 L of orange juice. How many mL is that?", "a": 650.0, "h": "1 kg = 1000 g. 1 L = 1000 mL.", "s": "0.65 × 1000 = 650 mL", "u": "mL"}, {"d": 3, "t": "num", "q": "At the Clinic: Ravi's bag weighs 3.4 kg. What is its mass in grams?", "a": 3400.0, "h": "1 kg = 1000 g. 1 L = 1000 mL.", "s": "3.4 × 1000 = 3400 g", "u": "g"}], "5": [{"d": 1, "t": "num", "q": "🔎 Security Logbook: the guard's last entry was 6:45 pm. The museum closes at 7:00 pm. How many minutes was he still on duty?", "a": 15.0, "h": "Count on to the next hour first, then count the rest.", "s": "6:45 pm → 7:00 pm = 15 minutes", "u": "min"}, {"d": 2, "t": "mc", "q": "🔎 Diamond Gallery: the last check was at 3:30 pm. The next check was at 5:00 pm. How long was the thief's window?", "o": ["1 h 30 min", "1 h 70 min", "2 h 30 min", "1 h 20 min"], "a": "1 h 30 min", "h": "Count on to the next hour first, then count the rest.", "s": "3:30 pm → 4:30 pm = 1 h\n4:30 pm → 5:00 pm = 30 min"}, {"d": 2, "t": "num", "q": "🔎 CCTV Control Room: footage was deleted from 4:15 pm to 4:52 pm. For how many minutes?", "a": 37.0, "h": "Count on to the next hour first, then count the rest.", "s": "52 − 15 = 37 minutes", "u": "min"}, {"d": 2, "t": "num", "q": "🔎 Visitors' Register: Mr. Vale was allowed to stay until 4:30 pm but left at 5:05 pm. How many minutes longer did he stay?", "a": 35.0, "h": "Count on to the next hour first, then count the rest.", "s": "4:30 pm → 5:00 pm = 30 min\n5:00 pm → 5:05 pm = 5 min\n30 + 5 = 35 min", "u": "min"}, {"d": 1, "t": "num", "q": "🔎 Staff Room: the guard's break started at 4:00 pm. He returned at 4:45 pm. How many minutes was his break?", "a": 45.0, "h": "Count on to the next hour first, then count the rest.", "s": "4:00 pm → 4:45 pm = 45 minutes", "u": "min"}, {"d": 3, "t": "mc", "q": "🔎 Loading Bay: a truck arrived at 11:20 pm. The delivery took 45 minutes. When did it leave?", "o": ["12:05 am", "11:65 pm", "12:05 pm", "11:05 pm"], "a": "12:05 am", "h": "Count on to the next hour first, then count the rest.", "s": "11:20 pm + 40 min = 12:00 midnight\n12:00 + 5 min = 12:05 am"}, {"d": 3, "t": "mc", "q": "🔎 Detective's Office: Mr. Vale's restaurant alibi is from 19:30 to 21:15. How long was he there?", "o": ["1 h 45 min", "2 h 15 min", "1 h 15 min", "2 h 45 min"], "a": "1 h 45 min", "h": "Count on to the next hour first, then count the rest.", "s": "19:30 → 20:30 = 1 h\n20:30 → 21:15 = 45 min"}, {"d": 2, "t": "mc", "q": "🔎 Police HQ: the crime started at 4:15 pm and took 37 minutes. When did it finish?", "o": ["4:52 pm", "4:42 pm", "5:52 pm", "4:37 pm"], "a": "4:52 pm", "h": "Count on to the next hour first, then count the rest.", "s": "15 + 37 = 52, so 4:52 pm"}], "6": [{"d": 1, "t": "mc", "q": "🕵️ In ∠ABC, which point is the vertex?", "o": ["B", "A", "C"], "a": "B", "h": "The vertex is the middle letter. It is where the two arms meet.", "s": ""}, {"d": 1, "t": "mc", "q": "🕵️ In ∠PQR, which point is the vertex?", "o": ["Q", "P", "R"], "a": "Q", "h": "The vertex is the middle letter. It is where the two arms meet.", "s": ""}, {"d": 1, "t": "mc", "q": "🕵️ In ∠AOB, which point is the vertex?", "o": ["O", "A", "B"], "a": "O", "h": "The vertex is the middle letter. It is where the two arms meet.", "s": ""}, {"d": 1, "t": "mc", "q": "🕵️ Which is another name for ∠ABC?", "o": ["∠CBA", "∠BAC", "∠CAB"], "a": "∠CBA", "h": "The vertex is the middle letter. It is where the two arms meet.", "s": "∠ABC, ∠CBA and ∠B all name the angle with vertex B."}, {"d": 2, "t": "mc", "q": "🕵️ ∠XYZ can also be named using only its vertex. Which name is that?", "o": ["∠Y", "∠X", "∠Z"], "a": "∠Y", "h": "The vertex is the middle letter. It is where the two arms meet.", "s": "The vertex of ∠XYZ is Y, so it can be called ∠Y."}, {"d": 1, "t": "num", "q": "🕵️ How many degrees are there on a straight line?", "a": 180.0, "h": "Right angle 90°. Straight line 180°. Full turn 360°.", "s": "", "u": "°"}, {"d": 1, "t": "num", "q": "🕵️ How many degrees are there in a right angle?", "a": 90.0, "h": "Right angle 90°. Straight line 180°. Full turn 360°.", "s": "", "u": "°"}, {"d": 1, "t": "num", "q": "🕵️ How many degrees are there in a full turn?", "a": 360.0, "h": "Right angle 90°. Straight line 180°. Full turn 360°.", "s": "", "u": "°"}, {"d": 2, "t": "num", "q": "🕵️ Two angles are on a straight line. One angle is 65°. Find the other angle.", "a": 115.0, "h": "Angles on a straight line add up to 180°.", "s": "180° − 65° = 115°", "u": "°"}, {"d": 2, "t": "num", "q": "🕵️ Two angles are on a straight line. One angle is 112°. Find the other angle.", "a": 68.0, "h": "Angles on a straight line add up to 180°.", "s": "180° − 112° = 68°", "u": "°"}, {"d": 2, "t": "num", "q": "🕵️ Three angles are on a straight line. Two of them are 43° and 72°. Find the third angle.", "a": 65.0, "h": "Angles on a straight line add up to 180°.", "s": "180° − 43° − 72° = 65°", "u": "°"}, {"d": 3, "t": "num", "q": "🕵️ Three angles meet at a point. Two of them are 90° and 120°. Find the third angle.", "a": 150.0, "h": "Angles at a point add up to 360°.", "s": "360° − 90° − 120° = 150°", "u": "°"}, {"d": 3, "t": "num", "q": "🕵️ Four angles meet at a point: 85°, 110°, 95° and e. Find e.", "a": 70.0, "h": "Angles at a point add up to 360°.", "s": "360° − 85° − 110° − 95° = 70°", "u": "°"}, {"d": 3, "t": "num", "q": "🕵️ Three angles meet at a point. Two of them are 130° and 80°. Find the third angle.", "a": 150.0, "h": "Angles at a point add up to 360°.", "s": "360° − 130° − 80° = 150°", "u": "°"}, {"d": 2, "t": "num", "q": "🕵️ Two straight lines cross. One angle is 75°. What is the vertically opposite angle?", "a": 75.0, "h": "Vertically opposite angles are equal.", "s": "Vertically opposite angles are equal: 75°", "u": "°"}, {"d": 3, "t": "num", "q": "🕵️ A right angle and a 35° angle sit on a straight line with one more angle. Find the unknown angle.", "a": 55.0, "h": "Angles on a straight line add up to 180°.", "s": "180° − 90° − 35° = 55°", "u": "°"}, {"d": 3, "t": "num", "q": "🕵️ Four angles meet at a point: 90°, 120°, 80° and one unknown. Find the unknown angle.", "a": 70.0, "h": "Angles at a point add up to 360°.", "s": "360° − 90° − 120° − 80° = 70°", "u": "°"}, {"d": 3, "t": "num", "q": "🕵️ Two lines cross. One angle is 65°. Find the angle next to it on the straight line.", "a": 115.0, "h": "Angles on a straight line add up to 180°.", "s": "180° − 65° = 115°", "u": "°"}], "7": [{"d": 1, "t": "mc", "q": "The top edge and the bottom edge of a whiteboard are…", "o": ["perpendicular", "parallel", "neither"], "a": "parallel", "h": "Do they meet at a right angle, or never meet?", "s": ""}, {"d": 1, "t": "mc", "q": "The wall of an HDB block and the ground are…", "o": ["perpendicular", "parallel", "neither"], "a": "perpendicular", "h": "Do they meet at a right angle, or never meet?", "s": ""}, {"d": 1, "t": "mc", "q": "Two writing lines in your exercise book are…", "o": ["perpendicular", "parallel", "neither"], "a": "parallel", "h": "Do they meet at a right angle, or never meet?", "s": ""}, {"d": 1, "t": "mc", "q": "Two window bars that cross at a right angle are…", "o": ["perpendicular", "parallel", "neither"], "a": "perpendicular", "h": "Do they meet at a right angle, or never meet?", "s": ""}, {"d": 2, "t": "mc", "q": "Perpendicular lines meet at a ______ angle.", "o": ["right", "straight", "small", "big"], "a": "right", "h": "Look for the small square in the corner.", "s": ""}, {"d": 2, "t": "mc", "q": "Parallel lines never ______.", "o": ["meet", "end", "bend", "turn"], "a": "meet", "h": "Think of MRT tracks.", "s": ""}, {"d": 3, "t": "mc", "q": "Which symbol means “is perpendicular to”?", "o": ["⊥", "//", "=", "+"], "a": "⊥", "h": "It looks like one line standing on another.", "s": "⊥ means “is perpendicular to”. // means “is parallel to”."}], "8": [{"d": 2, "t": "num", "q": "How many pairs of parallel sides does a square have?", "a": 2.0, "h": "Opposite sides are parallel. A square has 2 pairs of opposite sides.", "s": "Top and bottom, left and right: 2 pairs."}, {"d": 1, "t": "mc", "q": "True or false: a rectangle has opposite sides of the same length.", "o": ["True", "False"], "a": "True", "h": "Picture a door: the two long sides match and the two short sides match.", "s": "Opposite sides of a rectangle are the same length."}]};
+FLOORS.forEach(f=>f.rooms.forEach(r=>{const b=BANK[r.ch];if(!b)return;r.qs=(r.ch===7||r.ch===8)?r.qs.concat(b):b}));
+
+
+/* Fraction questions with a whole-number answer just need the number pad */
+FLOORS.forEach(f=>f.rooms.forEach(r=>r.qs.forEach(q=>{if(q.t==="frac"&&/^\d+$/.test(q.a)){q.t="num";q.a=+q.a}})));
+/* ===== Sections: 4 sections of 4 chapters each ===== */
+(()=>{const all=FLOORS.flatMap(f=>f.rooms).sort((a,b)=>a.ch-b.ch);FLOORS.forEach((f,i)=>{f.rooms=all.slice(i*4,i*4+4)})})();
+/* ===== Diagrams: drawn from simple specs so every geometry, fraction and graph question has a picture ===== */
+const R2=Math.PI/180;
+const svgWrap=(w,h,body,label)=>`<svg class="geo" viewBox="0 0 ${w} ${h}" width="${w}" role="img" aria-label="${esc(label)}">${body}</svg>`;
+const P2=(cx,cy,deg,r)=>[cx+r*Math.cos(deg*R2),cy-r*Math.sin(deg*R2)];
+const pt=p=>p.map(v=>v.toFixed(1)).join(",");
+function arcPath(cx,cy,a1,a2,r){const p1=P2(cx,cy,a1,r),p2=P2(cx,cy,a2,r);return `<path class="arc" d="M${pt(p1)} A${r} ${r} 0 ${a2-a1>180?1:0} 0 ${pt(p2)}"/>`}
+function rightMark(cx,cy,a,s=18){const p1=P2(cx,cy,a,s),p3=P2(cx,cy,a+90,s),p2=[p1[0]+p3[0]-cx,p1[1]+p3[1]-cy];return `<path class="mark" d="M${pt(p1)} L${pt(p2)} L${pt(p3)}"/>`}
+const lbl=(x,y,t,cls="")=>`<text x="${x.toFixed(1)}" y="${y.toFixed(1)}" text-anchor="middle" dominant-baseline="middle" class="${cls}">${esc(t)}</text>`;
+function sectors(cx,cy,start,list,total,opts={}){
+  // list: values (numbers) or labels ("?", "e"); unknowns share what is left of the total
+  const known=list.filter(v=>typeof v==="number").reduce((a,b)=>a+b,0),unk=list.filter(v=>typeof v!=="number").length;
+  let a=start,out="",rays=[];
+  list.forEach((v,i)=>{const size=typeof v==="number"?v:(total-known)/unk,a2=a+size,mid=a+size/2;
+    if(v===90)out+=rightMark(cx,cy,a,20);else out+=arcPath(cx,cy,a,a2,size<40?52:38);
+    const lr=size<40?78:size<70?64:58,[lx,ly]=P2(cx,cy,mid,lr);
+    out+=lbl(lx,ly,typeof v==="number"?v+"°":v,typeof v==="number"?"val":"ask");
+    rays.push(a2);a=a2});
+  return{out,rays};
+}
+function figLine(f){const W=420,H=220,cx=210,cy=170;
+  const {out,rays}=sectors(cx,cy,0,f.a,180);
+  let b=`<line x1="30" y1="${cy}" x2="390" y2="${cy}"/>`;
+  rays.slice(0,-1).forEach(a=>{const[x,y]=P2(cx,cy,a,140);b+=`<line x1="${cx}" y1="${cy}" x2="${x.toFixed(1)}" y2="${y.toFixed(1)}"/>`});
+  return svgWrap(W,H,b+out+`<circle class="dot" cx="${cx}" cy="${cy}" r="5"/>`,"Angles on a straight line")}
+function figPoint(f){const W=360,H=320,cx=180,cy=160;
+  const {out,rays}=sectors(cx,cy,f.start||0,f.a,360);let b="";
+  [f.start||0,...rays.slice(0,-1)].forEach(a=>{const[x,y]=P2(cx,cy,a,130);b+=`<line x1="${cx}" y1="${cy}" x2="${x.toFixed(1)}" y2="${y.toFixed(1)}"/>`});
+  return svgWrap(W,H,b+out+`<circle class="dot" cx="${cx}" cy="${cy}" r="5"/>`,"Angles at a point")}
+function figCross(f){const W=400,H=280,cx=200,cy=140,a=f.a;
+  let b="";[0,a].forEach(t=>{const p=P2(cx,cy,t,170),q=P2(cx,cy,t+180,170);b+=`<line x1="${pt(p).split(",")[0]}" y1="${pt(p).split(",")[1]}" x2="${pt(q).split(",")[0]}" y2="${pt(q).split(",")[1]}"/>`});
+  b+=arcPath(cx,cy,0,a,40);let [x,y]=P2(cx,cy,a/2,66);b+=lbl(x,y,a+"°","val");
+  const s=f.ask==="opp"?[180,180+a]:[a,180];b+=arcPath(cx,cy,s[0],s[1],34);[x,y]=P2(cx,cy,(s[0]+s[1])/2,62);b+=lbl(x,y,"?","ask");
+  return svgWrap(W,H,b+`<circle class="dot" cx="${cx}" cy="${cy}" r="5"/>`,"Two straight lines crossing")}
+function figAng(f){const W=340,H=250,cx=70,cy=205,a=f.a||50,l=f.l||["","",""];
+  const pA=P2(cx,cy,a,165),pC=P2(cx,cy,0,230);
+  let b=`<line x1="${cx}" y1="${cy}" x2="${pA[0].toFixed(1)}" y2="${pA[1].toFixed(1)}"/><line x1="${cx}" y1="${cy}" x2="${pC[0].toFixed(1)}" y2="${pC[1].toFixed(1)}"/>`;
+  b+=a===90?rightMark(cx,cy,0,24):arcPath(cx,cy,0,a,40);
+  if(f.q){const[x,y]=P2(cx,cy,a/2,a===90?52:68);b+=lbl(x,y,"?","ask")}
+  const LA=P2(cx,cy,a,188),LC=P2(cx,cy,0,250);
+  b+=lbl(LA[0],LA[1],l[0],"pt")+lbl(cx-18,cy+20,l[1],"pt vtx")+lbl(Math.min(LC[0],W-14),LC[1],l[2],"pt");
+  return svgWrap(W,H,b+`<circle class="dot" cx="${cx}" cy="${cy}" r="5"/>`,`Angle ${l.join("")}`)}
+function figTurn(){const W=260,H=240,cx=130,cy=120;
+  return svgWrap(W,H,`<line x1="${cx}" y1="${cy}" x2="${cx+95}" y2="${cy}"/><path class="arc" d="M${cx+70} ${cy-6} A70 70 0 1 0 ${cx+68} ${cy+16}"/><path class="mark" d="M${cx+58} ${cy+6} L${cx+70} ${cy+18} L${cx+80} ${cy+4}"/>`+lbl(cx-6,cy-26,"?","ask")+`<circle class="dot" cx="${cx}" cy="${cy}" r="5"/>`,"A full turn")}
+const chev=(x,y,dir="r")=>dir==="r"?`<path class="par" d="M${x-8} ${y-10} L${x+6} ${y} L${x-8} ${y+10}"/>`:`<path class="par" d="M${x-10} ${y-8} L${x} ${y+6} L${x+10} ${y-8}"/>`;
+function figPair(f){const W=340,H=200;
+  if(f.m==="perp")return svgWrap(W,H,`<line x1="40" y1="160" x2="300" y2="160"/><line x1="170" y1="160" x2="170" y2="24"/>`+rightMark(170,160,0,22),"Two lines meeting at a right angle");
+  return svgWrap(W,H,`<line x1="40" y1="60" x2="300" y2="60"/><line x1="40" y1="140" x2="300" y2="140"/>`+chev(170,60)+chev(170,140),"Two parallel lines with arrowheads")}
+function figObj(f){const W=300,H=220;let b="",L="";
+  switch(f.o){
+    case"tracks":L="MRT tracks";for(let y=30;y<=190;y+=32)b+=`<rect class="soft" x="80" y="${y}" width="140" height="12" rx="2"/>`;b+=`<line class="hl" x1="115" y1="14" x2="115" y2="206"/><line class="hl" x1="185" y1="14" x2="185" y2="206"/>`;break;
+    case"door":L="A door standing on the floor";b+=`<rect class="soft" x="110" y="30" width="90" height="160"/><circle class="dot" cx="185" cy="115" r="5"/><line class="hl" x1="30" y1="190" x2="270" y2="190"/><line class="hl" x1="110" y1="30" x2="110" y2="190"/>`;break;
+    case"whiteboard":L="A whiteboard";b+=`<rect class="soft" x="40" y="50" width="220" height="110"/><line class="hl" x1="40" y1="50" x2="260" y2="50"/><line class="hl" x1="40" y1="160" x2="260" y2="160"/><line x1="70" y1="172" x2="230" y2="172"/>`;break;
+    case"hdb":L="An HDB block standing on the ground";b+=`<rect class="soft" x="110" y="24" width="90" height="166"/>`;for(let y=56;y<190;y+=32)b+=`<line class="thin" x1="110" y1="${y}" x2="200" y2="${y}"/>`;b+=`<line class="hl" x1="20" y1="190" x2="280" y2="190"/><line class="hl" x1="200" y1="24" x2="200" y2="190"/>`;break;
+    case"book":L="A page of an exercise book";b+=`<rect class="soft" x="70" y="20" width="160" height="180" rx="6"/>`;[60,95,130,165].forEach((y,i)=>b+=`<line class="${i===1||i===2?"hl":"thin"}" x1="85" y1="${y}" x2="215" y2="${y}"/>`);break;
+    case"window":L="A window with two bars crossing";b+=`<rect class="soft" x="70" y="20" width="160" height="180"/><line class="hl" x1="150" y1="20" x2="150" y2="200"/><line class="hl" x1="70" y1="110" x2="230" y2="110"/>`;break;}
+  return svgWrap(W,H,b,L+". The lines to look at are orange.")}
+function figQuad(f){
+  const s=f.scale||40,w=f.w*s,h=f.h*s,ox=f.dims?70:60,oy=50,W=w+ox+(f.dims?110:70),H=h+oy+(f.dims?70:50);
+  const TL=[ox,oy],TR=[ox+w,oy],BR=[ox+w,oy+h],BL=[ox,oy+h];let b="";
+  if(f.grid){for(let i=1;i<f.w;i++)b+=`<line class="thin" x1="${ox+i*s}" y1="${oy}" x2="${ox+i*s}" y2="${oy+h}"/>`;for(let j=1;j<f.h;j++)b+=`<line class="thin" x1="${ox}" y1="${oy+j*s}" x2="${ox+w}" y2="${oy+j*s}"/>`}
+  b+=`<rect class="shape" x="${ox}" y="${oy}" width="${w}" height="${h}"/>`;
+  if(f.rm){const corners=[[BL,0],[BR,90],[TR,180],[TL,270]];corners.forEach(([c,a],i)=>{if(f.ray&&i===0)return;b+=rightMark(c[0],c[1],a,16)})}
+  if(f.ticks){const sq=f.w===f.h,t=(x1,y1,x2,y2,n,vert)=>{let o="";const mx=(x1+x2)/2,my=(y1+y2)/2;for(let k=0;k<n;k++){const d=(k-(n-1)/2)*8;o+=vert?`<line class="tick" x1="${mx-9}" y1="${my+d}" x2="${mx+9}" y2="${my+d}"/>`:`<line class="tick" x1="${mx+d}" y1="${my-9}" x2="${mx+d}" y2="${my+9}"/>`}return o};
+    b+=t(...TL,...TR,1,false)+t(...BL,...BR,1,false)+t(...TL,...BL,sq?1:2,true)+t(...TR,...BR,sq?1:2,true)}
+  if(f.par){b+=chev(ox+w/2,oy)+chev(ox+w/2,oy+h)+chev(ox,oy+h/2,"d")+chev(ox+w,oy+h/2,"d")}
+  if(f.ray){const a=f.ray,tx=ox+w,ty=oy+h-w*Math.tan(a*R2);
+    b+=`<line x1="${BL[0]}" y1="${BL[1]}" x2="${tx}" y2="${ty.toFixed(1)}"/>`+arcPath(BL[0],BL[1],0,a,58);
+    let[x,y]=P2(BL[0],BL[1],a/2,90);b+=lbl(x,y,a+"°","val");b+=arcPath(BL[0],BL[1],a,90,40);[x,y]=P2(BL[0],BL[1],(a+90)/2,64);b+=lbl(x,y,"?","ask");
+    if(f.rl)b+=lbl(tx+18,ty,f.rl,"pt")}
+  if(f.lab){const L=f.lab.split("");b+=lbl(TL[0]-16,TL[1]-14,L[0],"pt")+lbl(TR[0]+16,TR[1]-14,L[1],"pt")+lbl(BR[0]+16,BR[1]+16,L[2],"pt")+lbl(BL[0]-16,BL[1]+16,L[3],"pt")}
+  if(f.dims){if(f.dw)b+=lbl(ox+w/2,oy+h+30,f.dw,f.dw==="?"?"ask":"val");if(f.dh)b+=`<text x="${ox+w+(f.ticks?28:14)}" y="${oy+h/2}" dominant-baseline="middle" class="${f.dh==="?"?"ask":"val"}">${esc(f.dh)}</text>`}
+  if(f.inner)b+=lbl(ox+w/2,oy+h/2,f.inner,"val big");
+  return svgWrap(W,H,b,f.alt||"A four-sided shape")}
+function figTwo(){return `<div class="fig-two">${figQuad({w:3,h:3,ticks:1,rm:1,scale:36,alt:"A square"})}${figQuad({w:5,h:3,ticks:1,rm:1,scale:36,alt:"A rectangle"})}</div>`}
+function figPie(f){const W=220,H=220,cx=110,cy=110,r=90;let b="";
+  for(let i=0;i<f.n;i++){const a1=90-i*360/f.n,a2=90-(i+1)*360/f.n,p1=P2(cx,cy,a1,r),p2=P2(cx,cy,a2,r);const on=i<f.s;
+    const cls=on?(f.used?"gone":"top"):"base";b+=`<path class="${cls}" d="M${cx} ${cy} L${pt(p1)} A${r} ${r} 0 0 1 ${pt(p2)} Z"/>`}
+  return svgWrap(W,H,b,`A circle cut into ${f.n} equal parts, ${f.s} ${f.used?"taken away":"with topping"}`)}
+function figBarModel(f){const W=440,H=90,cw=400/f.n;let b="";for(let i=0;i<f.n;i++)b+=`<rect class="${i<f.s?"top":"base"}" x="${20+i*cw}" y="20" width="${cw}" height="50"/>`;
+  return svgWrap(W,H,b,`A bar cut into ${f.n} equal parts, ${f.s} shaded`)}
+function figGrid(f){const c=f.c,r=f.r,s=60,W=c*s+40,H=r*s+40;let b="";for(let j=0;j<r;j++)for(let i=0;i<c;i++){const k=j*c+i;b+=`<rect class="${k<f.s?"top":"base"}" x="${20+i*s}" y="${20+j*s}" width="${s}" height="${s}"/>`}
+  return svgWrap(W,H,b,`A grid of ${r*c} equal sections, ${f.s} shaded`)}
+function figBars(f){const W=420,H=280,ox=56,oy=24,ph=200,pw=340,max=f.max,bw=pw/f.items.length;let b="";
+  for(let v=0;v<=max;v+=f.step){const y=oy+ph-v/max*ph;b+=`<line class="thin" x1="${ox}" y1="${y}" x2="${ox+pw}" y2="${y}"/><text x="${ox-10}" y="${y}" text-anchor="end" dominant-baseline="middle" class="axis">${v}</text>`}
+  f.items.forEach(([l,v],i)=>{const h=v/max*ph,x=ox+i*bw+bw*.2;b+=`<rect class="bar" x="${x}" y="${oy+ph-h}" width="${bw*.6}" height="${h}" rx="4"/>`+lbl(x+bw*.3,oy+ph+20,l,"axis")});
+  b+=`<line x1="${ox}" y1="${oy+ph}" x2="${ox+pw}" y2="${oy+ph}"/><line x1="${ox}" y1="${oy}" x2="${ox}" y2="${oy+ph}"/>`;
+  b+=`<text x="12" y="${oy+ph/2}" transform="rotate(-90 12 ${oy+ph/2})" text-anchor="middle" class="axis">${esc(f.unit)}</text>`;
+  return svgWrap(W,H+16,b,`${f.title}: `+f.items.map(([l,v])=>`${l} ${v}`).join(", "))}
+function figLineG(f){const W=440,H=280,ox=60,oy=24,ph=200,pw=340,{min,max,step}=f,n=f.pts.length;let b="";
+  const Y=v=>oy+ph-(v-min)/(max-min)*ph,X=i=>ox+20+i*(pw-40)/(n-1);
+  for(let v=min;v<=max;v+=step){b+=`<line class="thin" x1="${ox}" y1="${Y(v)}" x2="${ox+pw}" y2="${Y(v)}"/><text x="${ox-10}" y="${Y(v)}" text-anchor="end" dominant-baseline="middle" class="axis">${v}</text>`}
+  b+=`<polyline class="lineg" points="${f.pts.map(([l,v],i)=>`${X(i)},${Y(v)}`).join(" ")}"/>`;
+  f.pts.forEach(([l,v],i)=>{b+=`<circle class="pt-dot" cx="${X(i)}" cy="${Y(v)}" r="6"/>`+lbl(X(i),oy+ph+20,l,"axis")});
+  b+=`<line x1="${ox}" y1="${oy+ph}" x2="${ox+pw}" y2="${oy+ph}"/><line x1="${ox}" y1="${oy}" x2="${ox}" y2="${oy+ph}"/>`;
+  b+=`<text x="14" y="${oy+ph/2}" transform="rotate(-90 14 ${oy+ph/2})" text-anchor="middle" class="axis">${esc(f.unit)}</text>`;
+  return svgWrap(W,H+16,b,`${f.title}: `+f.pts.map(([l,v])=>`${l} ${v}`).join(", "))}
+function drawFig(f){if(Array.isArray(f))return cubes(f);
+  return({line:figLine,point:figPoint,cross:figCross,ang:figAng,turn:figTurn,pair:figPair,obj:figObj,quad:figQuad,two:figTwo,pie:figPie,barm:figBarModel,grid:figGrid,bars:figBars,lineg:figLineG}[f.k]||(()=>""))(f)}
+
+const CANDY_CHART={k:"bars",title:"Candy sold",unit:"Bags of candy",items:[["Mon",12],["Tue",15],["Wed",9]],max:16,step:2};
+const FIGS={
+ "🕵️ In ∠ABC, which point is the vertex?":{k:"ang",l:["A","B","C"],a:50},
+ "🕵️ In ∠PQR, which point is the vertex?":{k:"ang",l:["P","Q","R"],a:65},
+ "🕵️ In ∠AOB, which point is the vertex?":{k:"ang",l:["A","O","B"],a:40},
+ "🕵️ Which is another name for ∠ABC?":{k:"ang",l:["A","B","C"],a:55},
+ "🕵️ ∠XYZ can also be named using only its vertex. Which name is that?":{k:"ang",l:["X","Y","Z"],a:60},
+ "🕵️ How many degrees are there on a straight line?":{k:"line",a:["?"]},
+ "🕵️ How many degrees are there in a right angle?":{k:"ang",a:90,q:1},
+ "🕵️ How many degrees are there in a full turn?":{k:"turn"},
+ "🕵️ Two angles are on a straight line. One angle is 65°. Find the other angle.":{k:"line",a:[65,"?"]},
+ "🕵️ Two angles are on a straight line. One angle is 112°. Find the other angle.":{k:"line",a:[112,"?"]},
+ "🕵️ Three angles are on a straight line. Two of them are 43° and 72°. Find the third angle.":{k:"line",a:[43,72,"?"]},
+ "🕵️ Three angles meet at a point. Two of them are 90° and 120°. Find the third angle.":{k:"point",a:[90,120,"?"]},
+ "🕵️ Four angles meet at a point: 85°, 110°, 95° and e. Find e.":{k:"point",a:[85,110,95,"e"]},
+ "🕵️ Three angles meet at a point. Two of them are 130° and 80°. Find the third angle.":{k:"point",a:[130,80,"?"]},
+ "🕵️ Two straight lines cross. One angle is 75°. What is the vertically opposite angle?":{k:"cross",a:75,ask:"opp"},
+ "🕵️ A right angle and a 35° angle sit on a straight line with one more angle. Find the unknown angle.":{k:"line",a:[90,35,"?"]},
+ "🕵️ Four angles meet at a point: 90°, 120°, 80° and one unknown. Find the unknown angle.":{k:"point",a:[90,120,80,"?"]},
+ "🕵️ Two lines cross. One angle is 65°. Find the angle next to it on the straight line.":{k:"cross",a:65,ask:"adj"},
+ "Two lines meet at a right angle. They are…":{k:"pair",m:"perp"},
+ "The two rails of an MRT track are…":{k:"obj",o:"tracks"},
+ "The side of a door and the floor are…":{k:"obj",o:"door"},
+ "Which symbol means “is parallel to”?":{k:"pair",m:"par"},
+ "Which capital letter has perpendicular lines?":null,
+ "The top edge and the bottom edge of a whiteboard are…":{k:"obj",o:"whiteboard"},
+ "The wall of an HDB block and the ground are…":{k:"obj",o:"hdb"},
+ "Two writing lines in your exercise book are…":{k:"obj",o:"book"},
+ "Two window bars that cross at a right angle are…":{k:"obj",o:"window"},
+ "Perpendicular lines meet at a ______ angle.":{k:"pair",m:"perp"},
+ "Parallel lines never ______.":{k:"pair",m:"par"},
+ "Which symbol means “is perpendicular to”?":{k:"pair",m:"perp"},
+ "How many right angles does a square have?":{k:"quad",w:4,h:4,alt:"A square"},
+ "What is the only difference between a square and a rectangle?":{k:"two"},
+ "ABCD is a square. Which pair of sides is parallel?":{k:"quad",w:4,h:4,lab:"ABCD",alt:"Square ABCD"},
+ "ABCD is a square. A line is drawn from corner D to side BC. It makes a 35° angle with side DC. What is the unknown angle between DA and the line?":{k:"quad",w:5,h:5,lab:"ABCD",rm:1,ray:35,rl:"E",alt:"Square ABCD with a line from D to side BC making 35° with DC"},
+ "PQRS is a rectangle standing up tall. A line is drawn from corner S to side QR. It makes a 25° angle with side SR. What is the unknown angle between SP and the line?":{k:"quad",w:4,h:6.5,lab:"PQRS",rm:1,ray:25,rl:"T",alt:"Tall rectangle PQRS with a line from S to side QR making 25° with SR"},
+ "How many pairs of parallel sides does a square have?":{k:"quad",w:4,h:4,par:1,alt:"A square with arrowheads on its sides"},
+ "True or false: a rectangle has opposite sides of the same length.":{k:"quad",w:6,h:3.5,ticks:1,alt:"A rectangle with marks on its sides"},
+ "Find the area of a rectangle that is 5 cm long and 4 cm wide.":{k:"quad",w:5,h:4,grid:1,dims:1,dw:"5 cm",dh:"4 cm",alt:"A 5 cm by 4 cm rectangle on a 1 cm grid"},
+ "Find the perimeter of a square with sides of 6 cm.":{k:"quad",w:6,h:6,scale:32,dims:1,dw:"6 cm",dh:"6 cm",ticks:1,alt:"A square with 6 cm sides"},
+ "Find the perimeter of a rectangle that is 8 cm long and 3 cm wide.":{k:"quad",w:8,h:3,scale:34,dims:1,dw:"8 cm",dh:"3 cm",alt:"An 8 cm by 3 cm rectangle"},
+ "Find the area of a square with sides of 3 cm.":{k:"quad",w:3,h:3,scale:54,grid:1,dims:1,dw:"3 cm",dh:"3 cm",alt:"A 3 cm square on a 1 cm grid"},
+ "A square has an area of 25 cm². How long is one side?":{k:"quad",w:5,h:5,scale:40,dims:1,dw:"?",inner:"25 cm²",alt:"A square with area 25 square centimetres"},
+ "How many more bags of candy were sold on Tuesday than on Wednesday?":CANDY_CHART,
+ "On which day were the most bags of candy sold?":CANDY_CHART,
+ "How many bags of candy were sold altogether?":CANDY_CHART,
+ "How many more pupils chose mango than banana?":{k:"bars",title:"Favourite fruit",unit:"Pupils",items:[["Apple",5],["Banana",5],["Mango",10]],max:12,step:2},
+ "By how many degrees did the temperature rise from 9 a.m. to 3 p.m.?":{k:"lineg",title:"Temperature",unit:"°C",pts:[["9 a.m.",26],["12 p.m.",30],["3 p.m.",31]],min:24,max:32,step:2},
+ "🍕 Dough Station: the dough is cut into 4 equal pieces. 1 piece is used for the cat's mini pizza. What fraction of the dough is left?":{k:"pie",n:4,s:1,used:1},
+ "🍕 Sauce Station: sauce is spread on 2 of 6 equal parts. What fraction has sauce?":{k:"pie",n:6,s:2},
+ "🍕 Cheese Room: 5 of 8 cheese slices are on the pizza. What fraction of the slices is on the pizza?":{k:"pie",n:8,s:5},
+ "🍕 Pepperoni Pantry: 7 of 10 pepperoni slices are on the pizza. What fraction is on the pizza?":{k:"barm",n:10,s:7},
+ "🍕 Mushroom Cupboard: mushrooms are on 4 of 9 equal sections. What fraction has mushrooms?":{k:"grid",r:3,c:3,s:4},
+ "🍕 Herb Garden: basil is on 2 of 5 equal wedges. What fraction has basil?":{k:"pie",n:5,s:2},
+ "🍕 Olive Jar: olives are on 3 of 12 equal parts. What fraction has olives?":{k:"pie",n:12,s:3},
+ "🍕 Pizza Oven: the pizza is cut into 8 equal slices. The cat eats 2. What fraction of the pizza is left?":{k:"pie",n:8,s:2,used:1},
+};
+FLOORS.forEach(f=>f.rooms.forEach(r=>r.qs.forEach(q=>{if(q.q in FIGS){if(FIGS[q.q]){q.fig=FIGS[q.q];if(q.fig.k==="bars"||q.fig.k==="lineg")q.data=null}}})));
+
+/* ===== setup ===== */
+const CANDY={1:2,2:3,3:5}, LIVES=4, KEY="hmm-progress-v1";
+const $=id=>document.getElementById(id);
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+FLOORS.forEach((f,fi)=>f.rooms.forEach(r=>r.qs.forEach((q,i)=>{q.id=`${r.ch}-${i}`;q.floor=fi;q.room=r.ch})));
+const ALLQ={};FLOORS.forEach(f=>f.rooms.forEach(r=>r.qs.forEach(q=>ALLQ[q.id]=q)));
+
+let P=load(); let play=null, soundOn=P.sound!==false, musicOn=P.music!==false, chaseTimer=null;
+if(typeof P.wallet!=="number"){P.wallet=Object.values(P.rooms).reduce((a,r)=>a+(r.candy||0),0);save()}
+function load(){const base={name:"",rooms:{},missed:[],sound:true,owned:["kid"],runner:"kid"};try{const p=JSON.parse(localStorage.getItem(KEY));if(p&&typeof p==="object")return Object.assign(base,p)}catch(e){}return base}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(P))}catch(e){}}
+const RUNNERS=[{id:"kid",ic:"🧒",n:"Trick-or-treater",p:0},{id:"cat",ic:"🐈‍⬛",n:"Black cat",p:20},{id:"witch",ic:"🧙",n:"Witch",p:30},{id:"vamp",ic:"🧛",n:"Vampire",p:35},{id:"zombie",ic:"🧟",n:"Zombie",p:35},{id:"robot",ic:"🤖",n:"Robot",p:45},{id:"alien",ic:"👽",n:"Alien",p:50},{id:"bat",ic:"🦇",n:"Bat",p:60},{id:"dragon",ic:"🐉",n:"Dragon",p:80}];
+const DECOR=[{id:"web",ic:"🕸️",n:"Cobweb",p:8,x:6,y:10,z:3},{id:"candle",ic:"🕯️",n:"Candles",p:8,x:30,y:72,z:2.4},{id:"pumpkin",ic:"🎃",n:"Jack-o'-lantern",p:10,x:10,y:76,z:3.2},{id:"potion",ic:"🧪",n:"Bubbling potion",p:12,x:44,y:74,z:2.4},{id:"bats",ic:"🦇",n:"Bat swarm",p:15,x:52,y:12,z:2.6},{id:"owl",ic:"🦉",n:"Night owl",p:18,x:24,y:30,z:2.6},{id:"ball",ic:"🔮",n:"Crystal ball",p:20,x:60,y:74,z:2.6},{id:"portrait",ic:"🖼️",n:"Haunted portrait",p:20,x:42,y:30,z:3},{id:"broom",ic:"🧹",n:"Broomstick",p:22,x:92,y:66,z:3},{id:"skull",ic:"💀",n:"Skeleton",p:25,x:8,y:46,z:3},{id:"moon",ic:"🌕",n:"Full moon window",p:30,x:82,y:16,z:3.4},{id:"coffin",ic:"⚰️",n:"Coffin",p:35,x:78,y:74,z:3.2},{id:"crown",ic:"👑",n:"Pumpkin King crown",p:50,x:10,y:62,z:2},{id:"ghostpal",ic:"👻",n:"Friendly ghost",p:60,x:66,y:40,z:3.4}];
+const runnerIc=()=>(RUNNERS.find(r=>r.id===P.runner)||RUNNERS[0]).ic;
+const totals=()=>{let c=0,s=0,d=0;Object.values(P.rooms).forEach(r=>{c+=r.candy;s+=r.stars;d++});return{candy:c,stars:s,done:d}};
+
+/* ===== sound ===== */
+let ac=null;
+/* Audio: one shared context, resumed on the first tap. On iPads, the "playback" audio session lets sound play even with the silent switch on. */
+function getAC(){
+  try{if(navigator.audioSession&&navigator.audioSession.type!=="playback")navigator.audioSession.type="playback"}catch(e){}
+  try{ac=ac||new(window.AudioContext||window.webkitAudioContext)();if(ac.state!=="running")ac.resume()}catch(e){}
+  return ac}
+let silentEl=null;
+function iosUnlock(){ // a silent looping <audio> also switches older iPads to playback mode
+  if(silentEl)return;try{const sr=8000,n=sr/2,buf=new ArrayBuffer(44+n*2),v=new DataView(buf),w=(o,t)=>[...t].forEach((c,i)=>v.setUint8(o+i,c.charCodeAt(0)));
+    w(0,"RIFF");v.setUint32(4,36+n*2,true);w(8,"WAVEfmt ");v.setUint32(16,16,true);v.setUint16(20,1,true);v.setUint16(22,1,true);v.setUint32(24,sr,true);v.setUint32(28,sr*2,true);v.setUint16(32,2,true);v.setUint16(34,16,true);w(36,"data");v.setUint32(40,n*2,true);
+    silentEl=new Audio(URL.createObjectURL(new Blob([buf],{type:"audio/wav"})));silentEl.loop=true;silentEl.volume=0.01;silentEl.setAttribute("playsinline","");const pr=silentEl.play();if(pr&&pr.catch)pr.catch(()=>{})}catch(e){}}
+function unlockAudio(){getAC();iosUnlock();if(musicOn)Music.start()}
+["pointerdown","touchend","keydown"].forEach(ev=>document.addEventListener(ev,unlockAudio,{passive:true}));
+document.addEventListener("visibilitychange",()=>{if(document.hidden)Music.stop();else if(musicOn&&ac)Music.start()});
+
+/* Background music: a soft, spooky loop in A minor, built from simple tones. It speeds up when the ghost is close. */
+const Music=(()=>{
+  const n=m=>440*2**((m-69)/12);
+  const bass=[45,41,48,40], chords=[[57,60,64],[53,57,60],[55,60,64],[52,56,59]];
+  const tune=[76,72,69,72, 77,72,69,72, 79,76,72,76, 76,75,71,68];
+  let timer=null,next=0,step=0,master=null;
+  function note(f,t,d,type,vol){const o=ac.createOscillator(),g=ac.createGain();o.type=type;o.frequency.value=f;
+    g.gain.setValueAtTime(0.0001,t);g.gain.exponentialRampToValueAtTime(vol,t+.03);g.gain.exponentialRampToValueAtTime(.0001,t+d);
+    o.connect(g).connect(master);o.start(t);o.stop(t+d+.05)}
+  function tick(){if(!ac||ac.state!=="running")return;
+    const close=play&&play.gap!==undefined&&play.gap<=1.5&&!play.locked, beat=close?.24:.36;
+    while(next<ac.currentTime+.4){const bar=Math.floor(step/4)%4,b=step%4;
+      if(b===0)note(n(bass[bar]),next,beat*4,"sine",.5);
+      note(n(chords[bar][b%3]),next,beat*1.6,"triangle",.12);
+      if(step%2===0)note(n(tune[(step/2)%16]),next,beat*1.8,"sine",.16);
+      next+=beat;step=(step+1)%64}}
+  return{start(){if(timer||!getAC())return;if(!master){master=ac.createGain();master.connect(ac.destination)}
+      master.gain.cancelScheduledValues(ac.currentTime);master.gain.setValueAtTime(.0001,ac.currentTime);master.gain.exponentialRampToValueAtTime(.12,ac.currentTime+1.2);
+      next=ac.currentTime+.1;timer=setInterval(tick,100)},
+    stop(){if(!timer)return;clearInterval(timer);timer=null;try{master.gain.setTargetAtTime(.0001,ac.currentTime,.15)}catch(e){}}};
+})();
+function tone(f,d=.12,type="triangle",delay=0,vol=.07){if(!soundOn)return;try{getAC();
+  const o=ac.createOscillator(),g=ac.createGain(),t=ac.currentTime+delay;o.type=type;o.frequency.value=f;
+  g.gain.setValueAtTime(vol,t);g.gain.exponentialRampToValueAtTime(.0001,t+d);o.connect(g).connect(ac.destination);o.start(t);o.stop(t+d+.02)}catch(e){}}
+const sfx={tap:()=>tone(600,.05,"sine",0,.04),right:()=>[523,659,784].forEach((f,i)=>tone(f,.15,"triangle",i*.08)),
+  wrong:()=>{tone(220,.25,"sawtooth",0,.05);tone(165,.35,"sawtooth",.12,.05)},
+  boo:()=>[400,300,200,120].forEach((f,i)=>tone(f,.3,"sawtooth",i*.15,.06)),
+  win:()=>[523,659,784,1047,784,1047].forEach((f,i)=>tone(f,.18,"triangle",i*.12,.08))};
+function bats(emoji="🦇",n=10){if(matchMedia("(prefers-reduced-motion: reduce)").matches)return;const b=$("bats");
+  for(let i=0;i<n;i++){const s=document.createElement("span");s.textContent=emoji;s.style.left="50%";s.style.top="55%";
+    s.style.setProperty("--dx",(Math.random()-.5)*innerWidth*.9+"px");s.style.setProperty("--dy",-(Math.random()*innerHeight*.6+60)+"px");
+    s.style.setProperty("--r",(Math.random()-.5)*90+"deg");s.style.animationDelay=Math.random()*.25+"s";b.appendChild(s);setTimeout(()=>s.remove(),2000)}}
+
+
+/* draw a solid of unit cubes in isometric view; fig[row][col] = stack height, row 0 at the back */
+function cubes(fig){
+  const dx=30,dy=17,h=34,parts=[];let minX=1e9,maxX=-1e9,minY=1e9,maxY=-1e9;
+  const list=[];fig.forEach((row,r)=>row.forEach((ht,c)=>{for(let z=0;z<ht;z++)list.push({r,c,z})}));
+  list.sort((a,b)=>(a.r+a.c)-(b.r+b.c)||a.z-b.z);
+  list.forEach(({r,c,z})=>{const X=(c-r)*dx,Y=(c+r)*dy-z*h;
+    const P=pts=>pts.map(p=>p.join(",")).join(" ");
+    parts.push(`<polygon class="cl" points="${P([[X-dx,Y+dy],[X,Y+2*dy],[X,Y+2*dy+h],[X-dx,Y+dy+h]])}"/>`,
+      `<polygon class="cr" points="${P([[X,Y+2*dy],[X+dx,Y+dy],[X+dx,Y+dy+h],[X,Y+2*dy+h]])}"/>`,
+      `<polygon class="ct" points="${P([[X,Y],[X+dx,Y+dy],[X,Y+2*dy],[X-dx,Y+dy]])}"/>`);
+    minX=Math.min(minX,X-dx);maxX=Math.max(maxX,X+dx);minY=Math.min(minY,Y);maxY=Math.max(maxY,Y+2*dy+h)});
+  const pad=6;
+  return `<svg viewBox="${minX-pad} ${minY-pad} ${maxX-minX+2*pad} ${maxY-minY+2*pad}" width="${maxX-minX+2*pad}" role="img" aria-label="A solid made of ${list.length>0?"unit cubes":"cubes"}">${parts.join("")}</svg>`;
+}
+
+/* ===== fraction display: show a/b as a stacked fraction ===== */
+const frac=(n,d)=>`<span class="fr"><span class="fn">${n}</span><span class="fd">${d}</span></span>`;
+function fx(t){
+  let h=esc(t);
+  h=h.replace(/\(([^()]+)\)\/\(([^()]+)\)/g,(m,a,b)=>frac(a,b));
+  h=h.replace(/(\d+) (\d+)\/(\d+)/g,(m,w,a,b)=>`${w}${frac(a,b)}`);
+  h=h.replace(/(\d+|\?)\/(\d+|\?)/g,(m,a,b)=>frac(a,b));
+  return h;
+}
+function typed(v){
+  if(!v) return "";
+  const box='<span class="slot"></span>';
+  if(v.includes("/")){const [left,den]=v.split("/");const parts=left.split(" ");
+    const whole=parts.length>1?parts[0]:"", num=parts.length>1?parts[1]:parts[0];
+    return `${whole}${frac(num||box,den||box)}`}
+  if(v.endsWith(" ")) return `${v.trim()}${frac('<span class="slot"></span>',box)}`;
+  const parts=v.split(" ");
+  if(parts.length>1) return `${parts[0]}${frac(parts[1],box)}`;
+  return v;
+}
+/* ===== answer checking ===== */
+const gcd=(a,b)=>b?gcd(b,a%b):a;
+function parseAns(raw){
+  const s=raw.trim().replace(/\s+/g," ");
+  let m=s.match(/^(\d+) (\d+)\/(\d+)$/); if(m&&+m[3]>0) return{v:+m[1]+(+m[2]/+m[3]),kind:"mixed",n:+m[2],d:+m[3]};
+  m=s.match(/^(\d+)\/(\d+)$/); if(m&&+m[2]>0) return{v:+m[1]/+m[2],kind:"frac",n:+m[1],d:+m[2]};
+  const n=s.replace(/[ ,]/g,""); if(/^\d*\.?\d+$|^\d+\.$/.test(n)) return{v:parseFloat(n),kind:"num"};
+  return null;
+}
+function fracVal(a){return parseAns(a).v}
+function check(q,raw){
+  if(q.t==="mc") return {ok:raw===q.a};
+  const p=parseAns(raw); if(!p) return {ok:false,msg:"That doesn't look like a number. Check what you typed."};
+  const target=q.t==="frac"?fracVal(q.a):q.a;
+  if(Math.abs(p.v-target)>1e-9) return {ok:false};
+  if(q.form==="improper"&&p.kind!=="frac") return {ok:false,msg:"Right value, but write it as an improper fraction, like 9/4."};
+  if(q.form==="mixed"&&p.kind!=="mixed") return {ok:false,msg:"Right value, but write it as a mixed number, like 2 1/4."};
+  if(q.simp&&(p.kind==="num"||gcd(p.n,p.d)!==1)) return {ok:false,msg:"Right value! Now write it as a fraction in its simplest form."};
+  return {ok:true};
+}
+
+/* ===== screens ===== */
+function starHTML(n,cls="stars"){return `<span class="${cls}" aria-label="${n} of 3 stars">${"★".repeat(n)}<span class="off">${"★".repeat(3-n)}</span></span>`}
+
+function welcome(){
+  $("app").innerHTML=`
+  <h1 class="title">Haunted Maths Manor</h1>
+  <p class="lede">Explore four haunted floors, one for each term. Every room holds five maths riddles. Each room is a race to the exit door with a ghost on your tail. Right answers help you run, but wrong or slow answers let the ghost glide closer. Spend the candy you collect in the Haunted Shop!</p>
+  <label for="nick" style="font-weight:600">Pick a spooky nickname</label>
+  <input type="text" id="nick" maxlength="20" autocomplete="off" placeholder="e.g. Pumpkin Ninja" value="${esc(P.name)}">
+  <div class="row"><button class="btn-main" id="enter" type="button">Enter the manor 🎃</button></div>
+  <p class="note">Use a fun nickname, not your real full name. Turn your volume up: the manor has music! 🎵</p>
+  <details class="loadcode"><summary>Played on another iPad? Load your save code</summary>
+    <div style="display:flex;flex-direction:column;gap:10px;margin-top:10px"><input type="text" id="codeIn" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="Paste your save code">
+    <div class="row"><button class="btn-main" id="codeGo" type="button">Load my progress</button></div><p class="msg" id="codeMsg" role="status"></p></div></details>`;
+  $("codeGo").onclick=()=>{const r=loadCode($("codeIn").value);const m=$("codeMsg");if(!r.ok){m.className="msg err";m.textContent=r.msg;return}sfx.win();map()};
+  const go=()=>{const v=$("nick").value.trim();if(!v){$("nick").focus();return}P.name=v.slice(0,20);save();sfx.tap();map()};
+  $("enter").onclick=go;$("nick").onkeydown=e=>{if(e.key==="Enter")go()};
+}
+
+function map(){
+  play=null; clearInterval(chaseTimer); const t=totals();
+  const badges=FLOORS.map((f,i)=>P.rooms["boss"+i]?`<span class="badge">${esc(f.name)} cleared</span>`:"").join("");
+  $("app").innerHTML=`
+  <div class="bar"><span class="brand">Haunted Maths Manor</span>
+    <div class="stats"><span class="pill">${runnerIc()} ${esc(P.name)}</span><span class="pill">🍬 <b>${P.wallet}</b> to spend</span><span class="pill">⭐ <b>${t.stars}</b></span><span class="pill">🏆 <b>${t.candy}</b> score</span></div></div>
+  <div class="row"><button class="btn-main" id="shopBtn" type="button">🛒 Haunted Shop</button><button class="btn-main" id="lbBtn" type="button">🏆 Leaderboard</button>
+    <button class="btn-ghost" id="musBtn" type="button" aria-pressed="${musicOn}">${musicOn?"🎵 Music on":"🎵 Music off"}</button>
+    <button class="btn-ghost" id="sndBtn" type="button" aria-pressed="${soundOn}">${soundOn?"🔊 Sound effects on":"🔇 Sound effects off"}</button>
+    <button class="btn-ghost" id="nameBtn" type="button">Change nickname</button></div>
+  ${P.run?`<div class="resume" role="status"><span>⏸️ You left <b>${esc(P.run.title)}</b> at riddle ${P.run.i+1} of ${P.run.qids.length}, with ${P.run.candy} 🍬 collected.</span>
+    <span class="row"><button class="btn-main" id="resumeBtn" type="button">Continue the race</button><button class="btn-ghost" id="dropRun" type="button">Start fresh</button></span></div>`:""}
+  <p class="note">✓ Your progress saves automatically on this iPad. Changing iPads? <button class="linkbtn" id="codeBtn" type="button">Get a save code</button></p>
+  ${badges?`<div class="badges">${badges}</div>`:""}
+  ${FLOORS.map((f,fi)=>{
+    const doneAll=f.rooms.every(r=>P.rooms[r.ch]); const boss=P.rooms["boss"+fi];
+    return `<section class="floor"><div class="floor-head"><h2>${esc(f.name)}</h2></div>
+    <div class="rooms">${f.rooms.map(r=>{const p=P.rooms[r.ch];
+      return `<button type="button" class="door${p?" done":""}" data-room="${r.ch}">
+        <span class="ch">Chapter ${r.ch}</span><span class="nm">${esc(r.title)}</span><span class="sp">${esc(r.sp)}</span>
+        <span class="res">${starHTML(p?p.stars:0)}<span>${p?`🍬 ${p.candy}`:`5 riddles · ${r.qs.length} in the pool`}</span></span></button>`}).join("")}
+      <button type="button" class="door boss${doneAll?"":" locked"}${boss?" beaten":""}" data-boss="${fi}" ${doneAll?"":"disabled"}>
+        <span class="ch">Consolidation</span><span class="nm">👻 The Ghost Boss of ${esc(f.name)}</span>
+        <span class="sp">${doneAll?"Six riddles from this floor. Questions you missed come back to haunt you!":"Finish every room on this floor to unlock the boss."}</span>
+        <span class="res">${starHTML(boss?boss.stars:0)}<span>${boss?`🍬 ${boss.candy}`:"🔒"}</span></span></button>
+    </div></section>`}).join("")}`;
+  document.querySelectorAll("[data-room]").forEach(b=>b.onclick=()=>startRoom(+b.dataset.room));
+  document.querySelectorAll("[data-boss]").forEach(b=>b.onclick=()=>startBoss(+b.dataset.boss));
+  $("lbBtn").onclick=leaderboard;$("shopBtn").onclick=shop;$("codeBtn").onclick=saveCodeSheet;
+  if(P.run){$("resumeBtn").onclick=resumeRun;$("dropRun").onclick=()=>{if($("dropRun").dataset.armed){clearRun();map()}else{$("dropRun").dataset.armed=1;$("dropRun").textContent="Tap again to drop this run"}}}
+  $("sndBtn").onclick=()=>{soundOn=!soundOn;P.sound=soundOn;save();map()};
+  $("musBtn").onclick=()=>{musicOn=!musicOn;P.music=musicOn;save();musicOn?Music.start():Music.stop();map()};
+  $("nameBtn").onclick=welcome;
+  scrollTo({top:0});
+}
+
+function findRoom(ch){for(const f of FLOORS)for(const r of f.rooms)if(r.ch===ch)return r}
+const shuffle=a=>a.map(x=>[Math.random(),x]).sort((p,q)=>p[0]-q[0]).map(p=>p[1]);
+function pickMix(pool,n=5){const by=d=>shuffle(pool.filter(q=>q.d===d));const want=[[1,2],[2,2],[3,1]];let out=[];
+  want.forEach(([d,k])=>out=out.concat(by(d).slice(0,k)));
+  if(out.length<n)out=out.concat(shuffle(pool.filter(q=>!out.includes(q))).slice(0,n-out.length));
+  return out.slice(0,n).sort((a,b)=>a.d-b.d)}
+function startRoom(ch){const r=findRoom(ch);begin({key:String(ch),title:r.title,sub:r.sp,qs:pickMix(r.qs),fact:r.fact,boss:false})}
+function startBoss(fi){
+  const f=FLOORS[fi], pool=f.rooms.flatMap(r=>r.qs);
+  const missed=P.missed.map(id=>ALLQ[id]).filter(q=>q&&q.floor===fi);
+  const rest=pool.filter(q=>!missed.includes(q)).sort(()=>Math.random()-.5);
+  const qs=missed.sort(()=>Math.random()-.5).slice(0,6).concat(rest).slice(0,6).sort((a,b)=>a.d-b.d);
+  begin({key:"boss"+fi,title:`The Ghost Boss of ${f.name}`,sub:"Consolidation",qs,boss:true,
+    fact:`You beat the Ghost Boss of ${f.name}! You've earned the “${f.name} cleared” badge.`});
+}
+const START_GAP=3, MAX_GAP=5, CREEP_SECS=20;
+function begin(cfg){play=Object.assign(cfg,{slots:null,active:null,i:0,gap:START_GAP,tries:0,hinted:false,candy:0,mistakes:0,marks:[],input:"",locked:false,qtime:0});sfx.tap();renderQ();saveRun()}
+function saveRun(){if(!play)return;const last=play.i===play.qs.length-1;if(play.locked&&last)return;
+  P.run={key:play.key,title:play.title,sub:play.sub,fact:play.fact,boss:play.boss,qids:play.qs.map(q=>q.id),
+    i:play.locked?play.i+1:play.i,gap:play.gap,candy:play.candy,mistakes:play.mistakes,marks:play.marks.slice(0,play.locked?play.i+1:play.i)};save()}
+function clearRun(){if(P.run){delete P.run;save()}}
+function resumeRun(){const r=P.run;const qs=(r&&r.qids||[]).map(id=>ALLQ[id]);
+  if(!r||qs.some(q=>!q)||r.i>=qs.length){clearRun();return map()}
+  play={key:r.key,title:r.title,sub:r.sub,fact:r.fact,boss:r.boss,qs,i:r.i,gap:r.gap,tries:0,hinted:false,candy:r.candy,mistakes:r.mistakes,marks:r.marks||[],input:"",slots:null,active:null,locked:false,qtime:0};
+  sfx.tap();renderQ()}
+function trackPos(){const n=play.qs.length,step=74/n;const run=8+play.i*step+(play.marks[play.i]==="ok"?step*.6:0);
+  return{run,ghost:Math.max(1,run-play.gap*6.5)}}
+function gapText(){const g=play.gap;if(g<=0)return"BOO! The ghost caught you!";
+  const st=g===1?"1 step":(Number.isInteger(g)?g:g.toFixed(1))+" steps";
+  return g>=MAX_GAP?`The ghost is ${st} behind. You're flying!`:g<=1.5?`Run! The ghost is only ${st} behind!`:`The ghost is ${st} behind you.`}
+
+function renderQ(){
+  const q=play.qs[play.i], tp=trackPos();
+  $("app").innerHTML=`
+  <div class="play">
+    <div class="play-top"><div><div class="term">${esc(play.sub)}</div><h2 style="font-size:1.3rem">${esc(play.title)}</h2></div>
+      <span class="row"><button class="btn-ghost" id="musRoom" type="button" aria-pressed="${musicOn}" aria-label="Music ${musicOn?"on":"off"}">${musicOn?"🎵":"🔇"}</button><button class="btn-ghost" id="quit" type="button">💾 Save &amp; leave</button></span></div>
+    <div class="play-top"><div class="prog" aria-label="Riddle ${play.i+1} of ${play.qs.length}">${play.qs.map((_,k)=>`<i class="${play.marks[k]||(k===play.i?"now":"")}"></i>`).join("")}</div>
+      <span class="pill">🍬 <b>${play.candy}</b> this room</span></div>
+    <div><div class="corridor" aria-hidden="true"><span class="torch" style="left:22%">🔥</span><span class="torch" style="left:48%">🔥</span><span class="torch" style="left:74%">🔥</span>
+      <span class="exit">🚪</span><span class="boo" id="booEl" style="left:${tp.ghost}%">👻</span><span class="runner" id="runEl" style="left:${tp.run}%">${runnerIc()}</span></div>
+      <div class="track-label" id="gapLbl" role="status">${gapText()}</div></div>
+    <p class="qtext">${fx(q.q)}${q.data?`<span class="data">${esc(q.data)}</span>`:""}</p>
+    ${q.fig?`<div class="fig">${drawFig(q.fig)}</div>`:""}
+    <div id="inputArea"></div>
+    <div id="fb"></div>
+    <div class="row" id="actions"><button class="btn-ghost" id="hintBtn" type="button" ${play.hinted?"disabled":""}>💡 Hint (−1 candy)</button></div>
+  </div>`;
+  $("quit").onclick=()=>{saveRun();sfx.tap();map()};
+  $("musRoom").onclick=()=>{musicOn=!musicOn;P.music=musicOn;save();musicOn?Music.start():Music.stop();const b=$("musRoom");b.textContent=musicOn?"🎵":"🔇";b.setAttribute("aria-pressed",musicOn);b.setAttribute("aria-label","Music "+(musicOn?"on":"off"))};
+  $("hintBtn").onclick=()=>{play.hinted=true;$("hintBtn").disabled=true;showFb("hint",`💡 ${fx(q.h)}`);sfx.tap()};
+  if(q.t==="mc") renderMC(q); else renderPad(q);
+  play.qtime=0; clearInterval(chaseTimer);
+  chaseTimer=setInterval(()=>{if(!play){clearInterval(chaseTimer);return}
+    if(play.locked||!$("sheet").hidden||document.hidden)return;
+    play.qtime++;
+    if(play.qtime%CREEP_SECS===0){play.gap=Math.max(0,play.gap-.5);sfx.tick();updateTrack();
+      if(play.gap<=0){play.locked=true;clearInterval(chaseTimer);setTimeout(caught,500)}
+      else{const l=$("gapLbl");if(l)l.textContent="Too slow… the ghost drifted closer! "+gapText()}}},1000);
+}
+let leaveArmed=false;
+function confirmLeave(){
+  if(play&&play.i===0&&!play.tries) return true;
+  if(leaveArmed){leaveArmed=false;return true}
+  leaveArmed=true;$("quit").textContent="Tap again to leave (progress in this room is lost)";setTimeout(()=>{leaveArmed=false;const b=$("quit");if(b)b.textContent="Leave room"},3000);return false;
+}
+function showFb(kind,html){$("fb").innerHTML=`<div class="fb ${kind}">${html}</div>`}
+
+function renderMC(q){
+  if(!q._order) q._order=q.o.slice().sort(()=>Math.random()-.5);
+  $("inputArea").innerHTML=`<div class="mc${q.o.every(o=>o.length<=2)?" big-opt":""}">${q._order.map(o=>`<button type="button" data-o="${esc(o)}">${fx(o)}</button>`).join("")}</div>`;
+  document.querySelectorAll("[data-o]").forEach(b=>b.onclick=()=>{if(play.locked||b.disabled)return;
+    const r=check(q,b.dataset.o);
+    if(r.ok){b.classList.add("right")} else {b.classList.add("wrong");b.disabled=true}
+    answer(r)});
+}
+function renderPad(q){
+  const isFrac=q.t==="frac", noWhole=q.form==="improper"||(isFrac&&fracVal(q.a)<1);
+  if(isFrac){play.slots=play.slots||{w:"",n:"",d:""};if(!play.active)play.active=noWhole?"n":"w"}
+  const keys=isFrac?["7","8","9","⌫","4","5","6","next","1","2","3","clear","0"]:["7","8","9","⌫","4","5","6","clear","1","2","3",".","0"];
+  const label={"⌫":"⌫","clear":"Clear","next":"Next box ➜"}, aria={"⌫":"Delete","clear":"Clear","next":"Move to the next box",".":"Decimal point"};
+  const box=isFrac?`
+    <div class="answer-box frac-box" id="abox">
+      ${noWhole?"":`<button type="button" class="slot-btn whole" data-slot="w" aria-label="Whole number box"></button>`}
+      <span class="fr-in"><button type="button" class="slot-btn" data-slot="n" aria-label="Top number box"></button><span class="fr-bar"></span><button type="button" class="slot-btn" data-slot="d" aria-label="Bottom number box"></button></span>
+      ${q.u?`<span class="unit">${esc(q.u)}</span>`:""}</div>`
+    :`<div class="answer-box" id="abox">${q.u==="$"?'<span class="unit">$</span>':""}<span class="val" id="val"></span>${q.u&&q.u!=="$"?`<span class="unit">${esc(q.u)}</span>`:""}</div>`;
+  $("inputArea").innerHTML=box+`
+    <div class="pad" role="group" aria-label="Number keypad" style="margin-top:12px">
+      ${keys.map(k=>`<button type="button" class="${/^\d$/.test(k)?"":"fn"}" data-k="${k}" aria-label="${aria[k]||k}">${label[k]||k}</button>`).join("")}
+      <button type="button" class="go" data-k="go" style="grid-column:span 3">Check ✓</button>
+    </div>
+    ${isFrac?`<p class="note" style="margin-top:8px">Tap a box, then type the number in it.${noWhole?"":" Leave the whole-number box empty if there is no whole number."}</p>`:""}`;
+  document.querySelectorAll("[data-k]").forEach(b=>b.onclick=()=>key(b.dataset.k));
+  document.querySelectorAll("[data-slot]").forEach(b=>b.onclick=()=>{if(play.locked)return;play.active=b.dataset.slot;sfx.tap();setVal()});
+  setVal();
+}
+function slotOrder(){const q=play.qs[play.i];return(q.form==="improper"||fracVal(q.a)<1)?["n","d"]:["w","n","d"]}
+function setVal(){
+  const q=play&&play.qs[play.i];if(!q)return;
+  if(q.t==="frac"){const lab={w:"whole",n:"top",d:"bottom"};
+    document.querySelectorAll("[data-slot]").forEach(b=>{const k=b.dataset.slot,v=play.slots[k];
+      b.innerHTML=v?esc(v):`<small>${lab[k]}</small>`;b.classList.toggle("active",play.active===k);b.classList.toggle("filled",!!v);
+      b.setAttribute("aria-pressed",play.active===k)});return}
+  const v=$("val");if(v)v.innerHTML=typed(play.input)}
+function fracInput(){const{w,n,d}=play.slots;if(!n&&!d)return w;return w?`${w} ${n}/${d}`:`${n}/${d}`}
+function key(k){
+  if(!play||play.locked)return; const q=play.qs[play.i]; if(q.t==="mc")return;
+  if(q.t==="frac"){
+    if(k==="go"){const{w,n,d}=play.slots;
+      if(!w&&!n&&!d)return;
+      if((n&&!d)||(!n&&d)){showFb("no",!d?"Fill in the bottom number too.":"Fill in the top number too.");shake();return}
+      answer(check(q,fracInput()));return}
+    sfx.tap();const a=play.active;
+    if(k==="next"){const o=slotOrder();play.active=o[(o.indexOf(a)+1)%o.length]}
+    else if(k==="⌫")play.slots[a]=play.slots[a].slice(0,-1);
+    else if(k==="clear"){play.slots={w:"",n:"",d:""};play.active=slotOrder()[0]}
+    else if(/^\d$/.test(k)&&play.slots[a].length<4)play.slots[a]+=k;
+    setVal();return}
+  if(k==="go"){if(!play.input.trim())return;answer(check(q,play.input));return}
+  if(k==="next"||k==="space"||k==="/")return;
+  if(k==="."&&q.t==="frac")return;
+  sfx.tap();
+  if(k==="⌫")play.input=play.input.slice(0,-1);
+  else if(k==="clear")play.input="";
+  else if(play.input.length<14)play.input+=k;
+  setVal();
+}
+document.addEventListener("keydown",e=>{
+  if(!play||!$("abox")||e.target.tagName==="INPUT")return;
+  if(/^[0-9]$/.test(e.key))key(e.key);else if(e.key===".")key(".");
+  else if(e.key===" "||e.key==="/"||e.key==="Tab"){e.preventDefault();key("next")}else if(e.key==="Backspace")key("⌫");else if(e.key==="Enter")key("go");
+});
+
+function answer(r){
+  const q=play.qs[play.i];
+  if(r.ok){
+    let c=CANDY[q.d]+(play.boss?1:0); if(play.tries>0)c=Math.ceil(c/2); if(play.hinted)c=Math.max(0,c-1);
+    play.candy+=c; play.marks[play.i]="ok"; play.locked=true; sfx.right(); bats("🍬",6);
+    if(play.tries===0)play.gap=Math.min(MAX_GAP,play.gap+1); updateTrackSave();
+    P.missed=P.missed.filter(id=>id!==q.id); save();
+    showFb("ok",`<span>${fx(r.note||"Correct!")} +${c} 🍬</span>`); next();
+  } else {
+    if(r.msg&&q.t!=="mc"){showFb("no",fx(r.msg));shake();return}  // format nudge: no penalty
+    play.gap=Math.max(0,play.gap-1); play.tries++; play.mistakes++; sfx.wrong(); shake();
+    if(!P.missed.includes(q.id)){P.missed.push(q.id);save()}
+    if(play.gap<=0){play.locked=true;clearInterval(chaseTimer);setTimeout(caught,500);updateTrack();return}
+    if(play.tries>=2){
+      play.marks[play.i]="bad"; play.locked=true;
+      const ans=q.t==="frac"||q.t==="mc"?q.a:(q.u==="$"?"$"+q.a.toFixed(2):(Number.isInteger(q.a)&&q.a>=10000?q.a.toLocaleString("en-US"):q.a)+(q.u?(q.u==="°"?"°":" "+q.u):""));
+      showFb("no",`<span>Not this time. The answer is <b>${fx(ans)}</b>.</span>${q.s?`<span class="sol">${fx(q.s)}</span>`:""}<span class="note">This riddle will come back in the floor's Ghost Boss room.</span>`);
+      next();
+    } else {
+      showFb("no","Not quite. The ghost glided closer! Try once more.");
+      if(q.t!=="mc"){play.input="";if(play.slots){play.slots={w:"",n:"",d:""};play.active=slotOrder()[0]}setVal()}
+    }
+    updateTrackSave();
+  }
+}
+function updateTrackSave(){updateTrack();saveRun()}
+function updateTrack(){const b=$("booEl"),r=$("runEl"),l=$("gapLbl");if(!b)return;const tp=trackPos();
+  r.style.left=tp.run+"%";b.style.left=(play.gap<=0?tp.run:tp.ghost)+"%";l.textContent=gapText()}
+function shake(){const a=$("abox");if(a){a.classList.remove("shake");void a.offsetWidth;a.classList.add("shake")}}
+function next(){
+  const last=play.i===play.qs.length-1;
+  $("actions").innerHTML=`<button class="btn-main" id="nextBtn" type="button">${last?"Finish room 🎃":"Next riddle →"}</button>`;
+  $("nextBtn").focus();
+  $("nextBtn").onclick=()=>{if(last)return finish();play.i++;play.tries=0;play.hinted=false;play.input="";play.slots=null;play.active=null;play.locked=false;renderQ()};
+}
+
+function caught(){
+  clearInterval(chaseTimer); clearRun(); sfx.boo(); bats("👻",8);
+  sheet(`<p class="big">BOO!</p><h2>The ghost caught you!</h2>
+    <p>The ghost snatched the candy from this run. Every riddle you missed is saved, so you can practise it again. Take a breath and try the room once more.</p>
+    <div class="row"><button class="btn-main" id="retry" type="button">Try the room again</button><button class="btn-ghost" id="back" type="button">Back to the manor</button></div>`);
+  const cfg=play;
+  $("retry").onclick=()=>{closeSheet();begin({key:cfg.key,title:cfg.title,sub:cfg.sub,qs:cfg.qs,fact:cfg.fact,boss:cfg.boss})};
+  $("back").onclick=()=>{closeSheet();map()};
+}
+
+function finish(){
+  clearInterval(chaseTimer);const r=$("runEl");if(r){r.style.left="88%"}
+  setTimeout(finishSheet,r?650:0);
+}
+function finishSheet(){
+  delete P.run;P.wallet=(P.wallet||0)+play.candy;
+  const stars=play.mistakes===0?3:play.mistakes<=1?2:1;
+  const prev=P.rooms[play.key]; const best={stars:Math.max(stars,prev?prev.stars:0),candy:Math.max(play.candy,prev?prev.candy:0)};
+  P.rooms[play.key]=best; save(); sfx.win(); bats("🦇",14);
+  const improved=!prev||play.candy>prev.candy||stars>prev.stars;
+  sheet(`<p class="big green">You escaped! 🚪</p>
+    <div class="bigstars">${"★".repeat(stars)}<span class="off">${"★".repeat(3-stars)}</span></div>
+    <p style="margin:0;font-size:1.2rem">You collected <b>${play.candy} 🍬</b>${play.mistakes?` with ${play.mistakes} mistake${play.mistakes>1?"s":""}`:" without a single mistake"}. You now have <b>${P.wallet} 🍬</b> to spend in the Haunted Shop.</p>
+    ${prev&&!improved?`<p class="note">Your best for this room stays at ${prev.stars}★ and ${prev.candy} 🍬. Only your best score counts.</p>`:""}
+    <div class="fact"><b>${play.boss?"Badge earned":"Spooky maths fact"}</b>${fx(play.fact)}</div>
+    <div class="row"><button class="btn-main" id="back" type="button">Back to the manor</button><button class="btn-ghost" id="toShop" type="button">🛒 Haunted Shop</button><button class="btn-ghost" id="again" type="button">Play this room again</button></div>
+    <p class="msg" id="postMsg"></p>`);
+  $("toShop").onclick=()=>{closeSheet();shop()};
+  const cfg=play;
+  $("back").onclick=()=>{closeSheet();map()};
+  $("again").onclick=()=>{closeSheet();cfg.boss?startBoss(+cfg.key.slice(4)):startRoom(+cfg.key)};
+  postScore().then(m=>{const el=$("postMsg");if(el&&m){el.textContent=m.text;el.className="msg "+(m.ok?"ok":"")}});
+}
+
+function sheet(html){$("card").innerHTML=html;$("sheet").hidden=false;const b=$("card").querySelector("button");if(b)b.focus()}
+function closeSheet(){$("sheet").hidden=true}
+
+
+
+/* ===== Save codes: carry progress to another device without an account ===== */
+const SLOT_KEYS=[...Array.from({length:16},(_,i)=>String(i+1)),"boss0","boss1","boss2","boss3"];
+const ITEM_IDS=()=>[...RUNNERS,...DECOR].map(x=>x.id);
+const chk=t=>{let h=11;for(const c of t)h=(h*37+c.charCodeAt(0))%1296;return h.toString(36).padStart(2,"0")};
+const b64e=t=>btoa(unescape(encodeURIComponent(t))).replace(/\+/g,"-").replace(/\//g,"_").replace(/=+$/,"");
+const b64d=t=>decodeURIComponent(escape(atob(t.replace(/-/g,"+").replace(/_/g,"/"))));
+function makeCode(){
+  let body=SLOT_KEYS.map(k=>{const r=P.rooms[k];return(r?r.stars*64+Math.min(63,r.candy):0).toString(36).padStart(2,"0")}).join("");
+  const ids=ITEM_IDS();let mask=0;ids.forEach((id,i)=>{if(P.owned.includes(id))mask+=2**i});
+  body+=mask.toString(36).padStart(5,"0")+Math.min(P.wallet,46655).toString(36).padStart(3,"0")+Math.max(0,RUNNERS.findIndex(r=>r.id===P.runner)).toString(36);
+  const nm=b64e(P.name);return(body+chk(body+nm)+"."+nm).toUpperCase().replace(/\.(.*)$/,(m,x)=>"."+nm);
+}
+function loadCode(raw){
+  const t=(raw||"").trim().replace(/\s+/g,"");const dot=t.indexOf(".");
+  if(dot<0)return{ok:false,msg:"That code looks incomplete. Copy the whole code, including the part after the dot."};
+  const body=t.slice(0,dot-2).toLowerCase(),c=t.slice(dot-2,dot).toLowerCase(),nm=t.slice(dot+1);
+  if(body.length!==49||chk(body+nm)!==c)return{ok:false,msg:"That code doesn't work. Check you copied all of it."};
+  let name;try{name=b64d(nm)}catch(e){return{ok:false,msg:"That code doesn't work. Check you copied all of it."}}
+  const rooms={};SLOT_KEYS.forEach((k,i)=>{const v=parseInt(body.slice(i*2,i*2+2),36);if(v)rooms[k]={stars:Math.floor(v/64),candy:v%64}});
+  const mask=parseInt(body.slice(40,45),36),ids=ITEM_IDS(),owned=ids.filter((id,i)=>Math.floor(mask/2**i)%2===1);
+  if(!owned.includes("kid"))owned.unshift("kid");
+  const wallet=parseInt(body.slice(45,48),36),runner=(RUNNERS[parseInt(body.slice(48,49),36)]||RUNNERS[0]).id;
+  Object.assign(P,{name:name.slice(0,20),rooms,owned,wallet,runner:owned.includes(runner)?runner:"kid"});delete P.run;save();
+  return{ok:true};
+}
+function saveCodeSheet(){
+  const code=makeCode();
+  sheet(`<h2 style="font-family:var(--display);font-weight:400;font-size:2.3rem;color:var(--moon)">Your save code</h2>
+    <p style="margin:0">Your progress already saves on this iPad. Use this code to carry it to another iPad. Copy it and keep it somewhere safe, like your class notes.</p>
+    <div class="code" id="codeTxt" style="font-size:1.05rem;word-break:break-all;letter-spacing:.02em">${esc(code)}</div>
+    <div class="row"><button class="btn-main" id="copyCode" type="button">Copy code</button><button class="btn-ghost" id="closeCode" type="button">Close</button></div>
+    <p class="msg" id="copyMsg" role="status"></p>
+    <p class="note">On the other iPad, open the game and tap “Load your save code” on the first screen. The code keeps your stars, scores, candy and shop items.</p>`);
+  $("copyCode").onclick=()=>{const done=()=>{$("copyMsg").className="msg ok";$("copyMsg").textContent="Copied! Paste it somewhere safe."};
+    const sel=()=>{const r=document.createRange();r.selectNodeContents($("codeTxt"));const s=getSelection();s.removeAllRanges();s.addRange(r);$("copyMsg").className="msg";$("copyMsg").textContent="The code is selected. Tap Copy in the menu that appears."};
+    try{navigator.clipboard.writeText(code).then(done,sel)}catch(e){sel()}};
+  $("closeCode").onclick=closeSheet;
+}
+/* ===== Haunted Shop: spend candy on decorations and runners ===== */
+function roomScene(){
+  return `<div class="haunt" role="img" aria-label="Your haunted room${P.owned.filter(id=>DECOR.some(d=>d.id===id)).length?" with "+DECOR.filter(d=>P.owned.includes(d.id)).map(d=>d.n.toLowerCase()).join(", "):", still empty"}">
+    <div class="haunt-floor"></div>
+    ${DECOR.filter(d=>P.owned.includes(d.id)).map(d=>`<span class="deco" style="left:${d.x}%;top:${d.y}%;font-size:${d.z}rem">${d.ic}</span>`).join("")}
+    <span class="deco me" style="left:50%;top:70%;font-size:3rem">${runnerIc()}</span>
+    ${DECOR.some(d=>P.owned.includes(d.id))?"":`<p class="haunt-empty">Your room is empty. Buy decorations to haunt it!</p>`}</div>`;
+}
+function shop(msg){
+  play=null; clearInterval(chaseTimer);
+  const card=(it,kind)=>{const own=P.owned.includes(it.id),eq=kind==="run"&&P.runner===it.id,afford=P.wallet>=it.p;
+    let btn;
+    if(kind==="run"&&own) btn=eq?`<button type="button" disabled>Running ✓</button>`:`<button type="button" class="btn-ghost" data-eq="${it.id}">Run as this</button>`;
+    else if(own) btn=`<button type="button" disabled>In your room ✓</button>`;
+    else btn=`<button type="button" class="btn-main" data-buy="${it.id}" data-kind="${kind}" ${afford?"":"disabled"}>${afford?`Buy · ${it.p} 🍬`:`Need ${it.p} 🍬`}</button>`;
+    return `<div class="item${own?" own":""}"><span class="item-ic" aria-hidden="true">${it.ic}</span><span class="item-nm">${esc(it.n)}</span>${btn}</div>`};
+  $("app").innerHTML=`
+  <div class="bar"><span class="brand">Haunted Shop</span><div class="stats"><span class="pill">🍬 <b>${P.wallet}</b> to spend</span></div></div>
+  <div class="row"><button class="btn-ghost" id="back" type="button">← Back to the manor</button></div>
+  ${msg?`<p class="msg ok" role="status">${esc(msg)}</p>`:""}
+  <section class="floor"><div class="floor-head"><h2>Your haunted room</h2></div>${roomScene()}</section>
+  <section class="floor"><div class="floor-head"><h2>Runners</h2><span class="term">Who races the ghost</span></div>
+    <div class="shop">${RUNNERS.map(r=>card(r,"run")).join("")}</div></section>
+  <section class="floor"><div class="floor-head"><h2>Decorations</h2><span class="term">For your haunted room</span></div>
+    <div class="shop">${DECOR.map(d=>card(d,"deco")).join("")}</div></section>
+  <p class="note">Earn more candy by clearing rooms. Replaying a room earns candy to spend too, but only your best run counts for the leaderboard.</p>`;
+  $("back").onclick=map;
+  document.querySelectorAll("[data-buy]").forEach(b=>b.onclick=()=>{
+    const it=(b.dataset.kind==="run"?RUNNERS:DECOR).find(x=>x.id===b.dataset.buy);
+    if(!it||P.wallet<it.p||P.owned.includes(it.id))return;
+    P.wallet-=it.p;P.owned.push(it.id);if(b.dataset.kind==="run")P.runner=it.id;save();sfx.win();bats(it.ic,8);
+    shop(`You bought ${it.n}!${b.dataset.kind==="run"?" It will race the ghost for you.":""}`)});
+  document.querySelectorAll("[data-eq]").forEach(b=>b.onclick=()=>{P.runner=b.dataset.eq;save();sfx.tap();shop()});
+  scrollTo({top:0});
+}
+/* ===== leaderboard (shared db when available; score code fallback) ===== */
+let DB=null,USER=null,UID=null,rows=[],canPost=null,isTeacher=false,lbStatus="Connecting to the leaderboard…";
+function scoreCode(name,candy,stars){let h=7;const s=`${name.toLowerCase().trim()}|${candy}|${stars}`;for(const c of s)h=(h*31+c.charCodeAt(0))%1296;
+  const al="ABCDEFGHJKLMNPQRSTUVWXYZ23456789";return `${candy}-${stars}-${al[h%32]}${al[Math.floor(h/32)%32]}`}
+async function postScore(){
+  if(!DB||!UID||canPost===false) return null;
+  const t=totals();
+  try{await DB.collection("scores").doc(UID).set({name:P.name,candy:t.candy,stars:t.stars,rooms:t.done,updated:Date.now()});
+    canPost=true;return{ok:true,text:"Score posted to the class leaderboard."}}
+  catch(e){canPost=false;return null}
+}
+(async()=>{
+  try{
+    const [db,user]=await Promise.all([window.claude?.use?.("db")??null,window.claude?.use?.("user")??null]);
+    DB=db;USER=user;
+    if(USER){try{UID=await USER.id()}catch(e){} try{isTeacher=!!(await USER.canEdit())}catch(e){}}
+    lbStatus="";
+    if(!DB){isTeacher=false;return}
+    DB.collection("scores").orderBy("candy","desc").limit(100).onSnapshot(s=>{
+      rows=s.docs.map(d=>Object.assign({_id:d.id},d.data()));if(!$("sheet").hidden&&$("lbList"))drawBoard()},
+      ()=>{lbStatus="The leaderboard can't be reached right now.";if($("lbList"))drawBoard()});
+  }catch(e){lbStatus=""}
+})();
+
+function leaderboard(){
+  const t=totals();
+  sheet(`<h2 style="font-family:var(--display);font-weight:400;font-size:2.4rem;color:var(--moon)">Class Leaderboard</h2>
+    <div id="lbList"></div>
+    <div id="myCode"></div>
+    ${isTeacher?`<div class="teacher"><h3>Teacher: add a score from a code</h3>
+      <p class="note">Students who can't post their own score can read you their nickname and score code from this screen.</p>
+      <input type="text" id="tName" placeholder="Nickname" maxlength="20" autocomplete="off">
+      <input type="text" id="tCode" placeholder="Score code, e.g. 42-11-QX" maxlength="16" autocomplete="off">
+      <div class="row"><button class="btn-main" id="tAdd" type="button">Add to leaderboard</button></div><p class="msg" id="tMsg"></p></div>`:""}
+    <div class="row"><button class="btn-ghost" id="lbClose" type="button">Close</button></div>`);
+  drawBoard();
+  const mine=rows.find(r=>r._id===UID);
+  if(DB&&UID&&t.done&&(!mine||mine.candy!==t.candy||mine.stars!==t.stars)) postScore().then(drawBoard);
+  $("lbClose").onclick=closeSheet;
+  if(isTeacher) $("tAdd").onclick=teacherAdd;
+}
+function drawBoard(){
+  const el=$("lbList");if(!el)return; const t=totals();
+  if(!DB){el.innerHTML=`<p class="note">The shared leaderboard isn't available on this device, so your score stays here. Show your teacher your score code below.</p>`}
+  else if(lbStatus){el.innerHTML=`<p class="note">${esc(lbStatus)}</p>`}
+  else if(!rows.length){el.innerHTML=`<p class="note">No scores yet. Clear a room to be the first name on the board!</p>`}
+  else el.innerHTML=`<ol class="board">${rows.map((r,i)=>`<li class="${r._id===UID?"me":""}"><span>${i+1}</span><span class="nm">${esc(r.name||"Mystery ghost")}</span><span>🏆 ${r.candy|0}</span><span>⭐ ${r.stars|0}${isTeacher?` <button class="x" type="button" data-del="${esc(r._id)}" aria-label="Remove ${esc(r.name||"entry")}">✕</button>`:""}</span></li>`).join("")}</ol>`;
+  el.querySelectorAll("[data-del]").forEach(b=>b.onclick=async()=>{
+    if(b.dataset.armed){try{await DB.collection("scores").doc(b.dataset.del).delete()}catch(e){}}
+    else{b.dataset.armed=1;b.textContent="Remove?"}});
+  const mc=$("myCode");
+  if(mc){const posted=canPost===true&&rows.some(r=>r._id===UID);
+    mc.innerHTML=posted?`<p class="note">Your score posts automatically each time you clear a room.</p>`:
+      t.done?`<p class="note">Your score code (for ${esc(P.name)}). Show it to your teacher:</p><div class="code">${scoreCode(P.name,t.candy,t.stars)}</div>`:
+      `<p class="note">Clear your first room to get on the board.</p>`}
+}
+async function teacherAdd(){
+  const name=$("tName").value.trim(), code=$("tCode").value.trim().toUpperCase().replace(/\s/g,""), m=$("tMsg");
+  const mm=code.match(/^(\d+)-(\d+)-([A-Z0-9]{2})$/);
+  if(!DB){m.className="msg err";m.textContent="The leaderboard isn't connected right now.";return}
+  if(!name||!mm){m.className="msg err";m.textContent="Enter the nickname and a code like 42-11-QX.";return}
+  if(scoreCode(name,+mm[1],+mm[2])!==code){m.className="msg err";m.textContent="That code doesn't match this nickname. Check the spelling of both.";return}
+  try{const id="t_"+name.toLowerCase().replace(/[^a-z0-9]+/g,"-").slice(0,30);
+    await DB.collection("scores").doc(id).set({name,candy:+mm[1],stars:+mm[2],updated:Date.now(),byTeacher:true});
+    m.className="msg ok";m.textContent=`Added ${name}.`;$("tName").value="";$("tCode").value=""}
+  catch(e){m.className="msg err";m.textContent="Couldn't save that score. Try again in a moment."}
+}
+
+
+P.name?map():welcome();
+</script>
+
+</body></html>
